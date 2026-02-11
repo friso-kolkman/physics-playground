@@ -240,6 +240,8 @@ function fullSketch(p) {
       groundClockAngle += clockSpeed;
       var shipRate = showTime ? clockSpeed / g : clockSpeed;
       shipClockAngle += shipRate;
+      groundClockAngle %= (Math.PI * 2);
+      shipClockAngle %= (Math.PI * 2);
     }
   };
 
@@ -554,6 +556,7 @@ function fullSketch(p) {
     var dx = x2 - x1;
     var dy = y2 - y1;
     var dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 1) return;
     var dashes = dist / (dashLen + gapLen);
     var ux = dx / dist;
     var uy = dy / dist;

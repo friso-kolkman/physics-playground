@@ -9,6 +9,7 @@
   }
 
   function mapRange(val, inMin, inMax, outMin, outMax) {
+    if (inMax === inMin) return outMin;
     return outMin + ((val - inMin) / (inMax - inMin)) * (outMax - outMin);
   }
 

@@ -279,15 +279,14 @@ function fullSketch(p) {
     var proj = projectile;
 
     if (airResistance) {
-      // Numerical Euler with quadratic drag
+      // Exponential decay for drag (stable at high drag + velocity)
       var speed = Math.sqrt(proj.vx * proj.vx + proj.vy * proj.vy);
-      var fdx = -dragCoeff * proj.vx * speed;
-      var fdy = -dragCoeff * proj.vy * speed;
-      var ax = fdx;
-      var ay = -gravity + fdy;
+      var dragFactor = Math.exp(-dragCoeff * speed * dt);
+      proj.vx *= dragFactor;
+      proj.vy *= dragFactor;
 
-      proj.vx += ax * dt;
-      proj.vy += ay * dt;
+      // Apply gravity after drag
+      proj.vy -= gravity * dt;
     } else {
       // No drag: only gravity on y
       proj.vy -= gravity * dt;

@@ -30,7 +30,9 @@ function fullSketch(p) {
   var gridStepX, gridStepY;
 
   // --- Potential heatmap buffer ---
-  var potentialStep = 4; // sample every Nth pixel
+  var potentialStep = 8; // sample every Nth pixel
+  var heatmapDirty = true;
+  var heatmapCache = null;
 
   p.setup = function () {
     p.createCanvas(p.width || 100, p.height || 100);
@@ -115,6 +117,7 @@ function fullSketch(p) {
       vx: 0,
       vy: 0
     });
+    heatmapDirty = true;
   };
 
   p.mouseDragged = function () {
@@ -123,6 +126,7 @@ function fullSketch(p) {
       charges[dragging].y = PhysicsUtils.clamp(p.mouseY, 0, p.height);
       charges[dragging].vx = 0;
       charges[dragging].vy = 0;
+      heatmapDirty = true;
     }
   };
 
@@ -184,47 +188,53 @@ function fullSketch(p) {
   // POTENTIAL HEATMAP
   // ----------------------------------------
   function drawPotentialHeatmap() {
-    p.loadPixels();
-    var d = p.pixelDensity();
-    var w = p.width;
-    var h = p.height;
-    var fullW = w * d;
-    var fullH = h * d;
+    if (heatmapDirty) {
+      p.loadPixels();
+      var d = p.pixelDensity();
+      var w = p.width;
+      var h = p.height;
+      var fullW = w * d;
+      var fullH = h * d;
 
-    for (var py = 0; py < h; py += potentialStep) {
-      for (var px = 0; px < w; px += potentialStep) {
-        var v = computePotential(px, py);
+      for (var py = 0; py < h; py += potentialStep) {
+        for (var px = 0; px < w; px += potentialStep) {
+          var v = computePotential(px, py);
 
-        // Map potential to color: positive = red, negative = blue, zero = black
-        var intensity = PhysicsUtils.clamp(Math.abs(v) * 0.15, 0, 1);
-        var r, g, b;
-        if (v > 0) {
-          r = Math.floor(intensity * 200);
-          g = Math.floor(intensity * 40);
-          b = Math.floor(intensity * 40);
-        } else {
-          r = Math.floor(intensity * 40);
-          g = Math.floor(intensity * 60);
-          b = Math.floor(intensity * 200);
-        }
+          // Map potential to color: positive = red, negative = blue, zero = black
+          var intensity = PhysicsUtils.clamp(Math.abs(v) * 0.15, 0, 1);
+          var r, g, b;
+          if (v > 0) {
+            r = Math.floor(intensity * 200);
+            g = Math.floor(intensity * 40);
+            b = Math.floor(intensity * 40);
+          } else {
+            r = Math.floor(intensity * 40);
+            g = Math.floor(intensity * 60);
+            b = Math.floor(intensity * 200);
+          }
 
-        // Fill the potentialStep x potentialStep block
-        for (var sy = 0; sy < potentialStep && py + sy < h; sy++) {
-          for (var sx = 0; sx < potentialStep && px + sx < w; sx++) {
-            for (var dd = 0; dd < d; dd++) {
-              for (var de = 0; de < d; de++) {
-                var idx = 4 * (((py + sy) * d + dd) * fullW + ((px + sx) * d + de));
-                p.pixels[idx] = r;
-                p.pixels[idx + 1] = g;
-                p.pixels[idx + 2] = b;
-                p.pixels[idx + 3] = 160;
+          // Fill the potentialStep x potentialStep block
+          for (var sy = 0; sy < potentialStep && py + sy < h; sy++) {
+            for (var sx = 0; sx < potentialStep && px + sx < w; sx++) {
+              for (var dd = 0; dd < d; dd++) {
+                for (var de = 0; de < d; de++) {
+                  var idx = 4 * (((py + sy) * d + dd) * fullW + ((px + sx) * d + de));
+                  p.pixels[idx] = r;
+                  p.pixels[idx + 1] = g;
+                  p.pixels[idx + 2] = b;
+                  p.pixels[idx + 3] = 160;
+                }
               }
             }
           }
         }
       }
+      p.updatePixels();
+      heatmapCache = p.get();
+      heatmapDirty = false;
+    } else if (heatmapCache) {
+      p.image(heatmapCache, 0, 0);
     }
-    p.updatePixels();
   }
 
   // ----------------------------------------
@@ -404,14 +414,15 @@ function fullSketch(p) {
       charges[i].x += charges[i].vx * 0.016;
       charges[i].y += charges[i].vy * 0.016;
 
+      // Bounce off walls (check before clamping)
+      if (charges[i].x < 5 || charges[i].x > p.width - 5) charges[i].vx *= -0.5;
+      if (charges[i].y < 5 || charges[i].y > p.height - 5) charges[i].vy *= -0.5;
+
       // Clamp to canvas
       charges[i].x = PhysicsUtils.clamp(charges[i].x, 5, p.width - 5);
       charges[i].y = PhysicsUtils.clamp(charges[i].y, 5, p.height - 5);
-
-      // Bounce off walls
-      if (charges[i].x <= 5 || charges[i].x >= p.width - 5) charges[i].vx *= -0.5;
-      if (charges[i].y <= 5 || charges[i].y >= p.height - 5) charges[i].vy *= -0.5;
     }
+    heatmapDirty = true;
   }
 
   // ----------------------------------------

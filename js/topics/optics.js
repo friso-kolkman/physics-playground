@@ -63,6 +63,7 @@ function fullSketch(p) {
     centerY = h / 2;
     lensX = Math.round(w * 0.45);
     objectH = h * 0.25;
+    objectX = Math.min(objectX, lensX - 20);
   };
 
   // --- Controls ---
@@ -693,14 +694,8 @@ function fullSketch(p) {
       // Converging: after lens, toward focal point and beyond
       var focalPtX = lensX + f;
       var focalPtY = centerY;
-      // Calculate slope from (lensX, objTipY) to (focalPtX, focalPtY)
-      if (img.isReal && Math.abs(img.dImg) < 5000) {
-        var end = clipToCanvas(lensX, objTipY, focalPtX, focalPtY);
-        drawRayLine(lensX, objTipY, end.x, end.y, col1, false);
-      } else {
-        var end = clipToCanvas(lensX, objTipY, focalPtX, focalPtY);
-        drawRayLine(lensX, objTipY, end.x, end.y, col1, false);
-      }
+      var end = clipToCanvas(lensX, objTipY, focalPtX, focalPtY);
+      drawRayLine(lensX, objTipY, end.x, end.y, col1, false);
     } else {
       // Diverging: outward, as if from virtual focus
       var vfX = lensX + f; // behind lens
@@ -715,20 +710,6 @@ function fullSketch(p) {
 
     // Ray 2 (green): Through center of lens -> continues straight
     var col2 = PRINCIPAL_COLORS[1];
-    var dx = lensX - objTipX;
-    var dy = (centerY - objTipY) * (lensX - objTipX) / (lensX - objTipX); // just centerY since passing through center
-    // Ray goes from object tip through lens center
-    var slopeCenter = (centerY - objTipY) / (lensX - objTipX);
-    // Actually it goes through (lensX, centerY + slope * 0) -- no, through the center of the lens
-    // The center ray passes through (lensX, hitY) where hitY is the intersection
-    // For a thin lens, the center ray is undeviated
-    // Slope from objTip to lens center:
-    var hitY_center = objTipY + (lensX - objTipX) * ((centerY - objTipY) / (lensX - objTipX));
-    // Hmm, that's just centerY if the ray aims at the center. Let me simplify:
-    // The ray goes from objTip through the center of the lens at (lensX, centerY)
-    // Wait -- for a thin lens, the "center ray" passes through the optical center.
-    // The optical center is at (lensX, centerY). The ray hits at that point.
-    // But objTipY != centerY, so the ray has a slope.
     var slope2 = (centerY - objTipY) / (lensX - objTipX);
     drawRayLine(objTipX, objTipY, lensX, centerY, col2, false);
     // Continues straight through

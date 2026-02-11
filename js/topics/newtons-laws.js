@@ -239,9 +239,9 @@ function fullSketch(p) {
 
     // Glow
     p.noStroke();
-    for (var g = 3; g >= 1; g--) {
-      p.fill(88, 166, 255, 8 * g);
-      p.rect(bx - blockSize / 2 - g * 3, by - g * 3, blockSize + g * 6, blockSize + g * 6, 8);
+    for (var gi = 3; gi >= 1; gi--) {
+      p.fill(88, 166, 255, 8 * gi);
+      p.rect(bx - blockSize / 2 - gi * 3, by - gi * 3, blockSize + gi * 6, blockSize + gi * 6, 8);
     }
 
     // Block

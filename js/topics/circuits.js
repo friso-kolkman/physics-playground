@@ -625,6 +625,8 @@ function fullSketch(p) {
         numResistors = 3;
         showDots = true;
         paused = false;
+        var pb = document.getElementById('pause-btn');
+        if (pb) pb.textContent = 'Pause';
 
         // Reset slider values
         setSlider('voltage-slider', 'voltage-value', 12);
@@ -644,6 +646,15 @@ function fullSketch(p) {
 
         recalculate();
         p.loop();
+      });
+    }
+
+    // Pause button
+    var pauseBtn = document.getElementById('pause-btn');
+    if (pauseBtn) {
+      pauseBtn.addEventListener('click', function () {
+        paused = !paused;
+        pauseBtn.textContent = paused ? 'Resume' : 'Pause';
       });
     }
   }

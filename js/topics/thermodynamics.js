@@ -273,7 +273,7 @@ function fullSketch(p) {
   p.mouseDragged = function () {
     if (!draggingPiston) return;
     var newX = PhysicsUtils.clamp(p.mouseX, minPistonX, maxPistonX);
-    pistonX = newX;
+    pistonX = Math.max(newX, chamberX + 30);
 
     // Push particles that are now outside the chamber
     for (var i = 0; i < particles.length; i++) {
@@ -303,7 +303,7 @@ function fullSketch(p) {
   p.touchMoved = function () {
     if (!draggingPiston || p.touches.length === 0) return;
     var newX = PhysicsUtils.clamp(p.touches[0].x, minPistonX, maxPistonX);
-    pistonX = newX;
+    pistonX = Math.max(newX, chamberX + 30);
     for (var i = 0; i < particles.length; i++) {
       if (particles[i].x + particles[i].r > pistonX) {
         particles[i].x = pistonX - particles[i].r - 1;

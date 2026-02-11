@@ -285,11 +285,14 @@ function fullSketch(p) {
     var F = driveAmp * Math.cos(omega * time);
 
     // Equation of motion: x'' + 2*gamma*x' + omega0^2*x = F
-    var acc = F - 2 * gamma * massV - (omega0 * omega0 / (4 * Math.PI * Math.PI)) * massX;
+    var acc = F - 2 * gamma * massV - omega0 * omega0 * massX;
 
     // Semi-implicit Euler
     massV += acc * dt;
     massX += massV * dt;
+
+    // Clamp displacement to keep visual reasonable
+    massX = PhysicsUtils.clamp(massX, -100, 100);
 
     // Platform visual position
     platformY = driveAmp * 2 * Math.cos(omega * time);
