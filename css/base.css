@@ -126,3 +126,10 @@ code {
   h1 { font-size: 1.5rem; }
   h2 { font-size: 1.25rem; }
 }
+
+@media (max-width: 480px) {
+  html { font-size: 14px; }
+  .container { padding: 0 var(--space-sm); }
+  h1 { font-size: 1.35rem; }
+  h2 { font-size: 1.15rem; }
+}

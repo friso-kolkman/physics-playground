@@ -43,10 +43,18 @@ function fullSketch(p) {
 
   p.setup = function () {
     p.createCanvas(p.width || 100, p.height || 100);
+    resizeToContainer();
     p.frameRate(60);
     bindControls();
     resetResonance();
   };
+
+  function resizeToContainer() {
+    var container = p.canvas.parentElement;
+    if (container) {
+      p.resizeCanvas(container.clientWidth, container.clientHeight);
+    }
+  }
 
   function resetResonance() {
     massX = 0;
@@ -127,13 +135,6 @@ function fullSketch(p) {
       el.textContent = (omega0 / (2 * Math.PI)).toFixed(2) + ' Hz';
     }
   }
-
-  p.windowResized = function () {
-    var container = p.canvas.parentElement;
-    if (container) {
-      p.resizeCanvas(container.clientWidth, container.clientHeight);
-    }
-  };
 
   p.draw = function () {
     p.background(COL_BG[0], COL_BG[1], COL_BG[2]);

@@ -27,8 +27,10 @@ function fullSketch(p) {
 
   // --- Setup ---
   p.setup = function () {
-    w = p.width;
-    h = p.height;
+    var container = p.canvas ? p.canvas.parentElement : p._userNode;
+    w = container ? container.offsetWidth : 400;
+    h = container ? container.offsetHeight : 400;
+    p.createCanvas(w, h);
     p.pixelDensity(1);
 
     pivotX = w / 2;
@@ -358,7 +360,16 @@ function fullSketch(p) {
   };
 
   p.windowResized = function () {
-    // handled by createSim / ResizeObserver
+    var container = p.canvas.parentElement;
+    if (container) {
+      w = container.offsetWidth;
+      h = container.offsetHeight;
+      if (w > 10 && h > 10) {
+        p.resizeCanvas(w, h);
+        pivotX = w / 2;
+        pivotY = h * 0.12;
+      }
+    }
   };
 }
 
