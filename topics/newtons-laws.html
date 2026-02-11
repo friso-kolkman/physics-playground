@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Newton's Laws - Physics Playground</title>
+  <style>:root { --accent: #58a6ff; }</style>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/sim.css">
+</head>
+<body>
+
+<main class="container" style="padding-top: var(--space-xl);">
+
+  <!-- Sim Header -->
+  <div class="sim-header">
+    <span class="topic-number">01</span>
+    <h1>Newton's Laws</h1>
+  </div>
+
+  <!-- Simulation + Controls -->
+  <div class="sim-layout">
+    <div class="sim-canvas-wrap" id="sim-canvas"></div>
+
+    <div class="sim-controls">
+      <div class="controls-title">Controls</div>
+
+      <!-- Mass slider -->
+      <div class="control-group">
+        <label>Mass <span class="value" id="mass-value">5</span> kg</label>
+        <input type="range" id="mass-slider" min="1" max="20" step="1" value="5">
+      </div>
+
+      <!-- Force slider -->
+      <div class="control-group">
+        <label>Force <span class="value" id="force-value">30</span> N</label>
+        <input type="range" id="force-slider" min="0" max="100" step="1" value="30">
+      </div>
+
+      <!-- Friction toggle -->
+      <div class="toggle-group">
+        <label class="toggle">
+          <input type="checkbox" id="friction-toggle">
+          <span class="toggle-track"></span>
+        </label>
+        <span>Friction</span>
+      </div>
+
+      <!-- Buttons -->
+      <div class="btn-row">
+        <button id="apply-right" class="primary">Apply Force &rarr;</button>
+        <button id="apply-left">Apply Force &larr;</button>
+      </div>
+      <div class="btn-row" style="margin-top: var(--space-sm);">
+        <button id="reset-btn">Reset</button>
+        <button id="pause-btn">Pause</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Topic Content -->
+  <div class="topic-content">
+
+    <!-- Discovery -->
+    <div class="discovery section">
+      <h3>Try this:</h3>
+      <ul>
+        <li>Set mass to 1 kg, apply force. Now set it to 20 kg with the same force. What changes?</li>
+        <li>Turn on friction. What happens to velocity over time?</li>
+        <li>Try to get the block to exactly the same speed with masses 5 and 10. What force ratio do you need?</li>
+      </ul>
+    </div>
+
+    <!-- The Physics -->
+    <div class="section">
+      <h2>The Physics</h2>
+      <p>
+        Newton's first law says objects are lazy: a thing at rest stays at rest, and a thing
+        in motion keeps moving at the same speed in the same direction, unless a force
+        comes along and changes that. This is inertia, and mass is the measure of how
+        much an object resists changes to its motion.
+      </p>
+      <p>
+        The second law puts a number on it. Force equals mass times acceleration (F = ma).
+        Push a shopping cart and it flies forward. Push a truck with the same effort and it
+        barely moves. Same force, different mass, different acceleration. It is the most
+        useful equation in all of mechanics.
+      </p>
+      <p>
+        The third law says forces always come in pairs. When you push the wall, the wall
+        pushes you back with exactly the same force. When a rocket blasts exhaust downward,
+        the exhaust pushes the rocket upward. No force exists in isolation.
+      </p>
+    </div>
+
+    <!-- Math Details -->
+    <details class="math-section section">
+      <summary>Math Details</summary>
+      <div class="math-content">
+        <p>Newton's second law in its simplest form:</p>
+        <span class="formula">F = ma &nbsp;&nbsp;&rarr;&nbsp;&nbsp; a = F / m</span>
+
+        <p>With friction opposing the motion (coefficient &mu;):</p>
+        <span class="formula">F<sub>net</sub> = F<sub>applied</sub> - &mu;mg</span>
+
+        <p>Kinematic equations for constant acceleration:</p>
+        <span class="formula">v = v<sub>0</sub> + at</span>
+        <span class="formula">x = x<sub>0</sub> + v<sub>0</sub>t + &frac12;at&sup2;</span>
+      </div>
+    </details>
+
+    <!-- Beyond Physics -->
+    <div class="beyond section">
+      <h3>Beyond Physics</h3>
+      <p>
+        <strong>Inertia in organizations.</strong> Large companies are high-mass objects. They have
+        thousands of employees, entrenched processes, and legacy systems. Changing direction
+        requires enormous, sustained force. This is not a bug; it is physics. Small nudges
+        produce negligible acceleration.
+      </p>
+      <p>
+        <strong>F = ma for startups.</strong> A five-person team is a low-mass system. Apply the same
+        force (effort, capital, focus) and you get dramatically more acceleration. This is
+        the structural advantage of being small, not just culture, but physics.
+      </p>
+      <p>
+        <strong>Friction as bureaucracy.</strong> Every approval layer, every sign-off chain, every
+        compliance check adds friction to the system. The net force propelling work forward
+        shrinks. Sometimes friction is necessary (you do want brakes on a car), but
+        unexamined friction quietly kills momentum.
+      </p>
+    </div>
+
+    <!-- Prev / Next Navigation -->
+    <div class="topic-nav">
+      <div></div>
+      <a class="next" href="energy.html">
+        <span class="nav-dir">Next</span>
+        <span class="nav-title">Conservation of Energy &rarr;</span>
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+<script src="../js/shared.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/topics/newtons-laws.js"></script>
+<script>
+  PhysicsUtils.createSim('sim-canvas', fullSketch);
+</script>
+</body>
+</html>

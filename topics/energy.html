@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conservation of Energy - Physics Playground</title>
+  <style>:root { --accent: #f0883e; }</style>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/sim.css">
+  <style>
+    .energy-bars { margin-top: var(--space-md); }
+    .energy-bar-group { margin-bottom: var(--space-sm); }
+    .energy-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 3px;
+    }
+    .energy-bar-label .bar-value {
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      font-size: 0.7rem;
+    }
+    .energy-bar-track {
+      width: 100%;
+      height: 10px;
+      background: var(--bg-tertiary);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .energy-bar-fill {
+      height: 100%;
+      border-radius: 5px;
+      transition: width 0.05s linear;
+      width: 0%;
+    }
+    #ke-bar-fill { background: #f0883e; }
+    #pe-bar-fill { background: #58a6ff; }
+    #total-bar-fill { background: var(--text-primary); }
+    .info-text {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: var(--space-md);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<main class="container" style="padding-top: var(--space-xl);">
+
+  <!-- Sim Header -->
+  <div class="sim-header">
+    <span class="topic-number">02</span>
+    <h1>Conservation of Energy</h1>
+  </div>
+
+  <!-- Simulation + Controls -->
+  <div class="sim-layout">
+    <div class="sim-canvas-wrap" id="sim-canvas"></div>
+
+    <div class="sim-controls">
+      <div class="controls-title">Controls</div>
+
+      <!-- Gravity slider -->
+      <div class="control-group">
+        <label>Gravity <span class="value" id="gravity-value">9.8</span> m/s&sup2;</label>
+        <input type="range" id="gravity-slider" min="1" max="20" step="0.1" value="9.8">
+      </div>
+
+      <!-- Rod length slider -->
+      <div class="control-group">
+        <label>Rod Length <span class="value" id="length-value">120</span> px</label>
+        <input type="range" id="length-slider" min="50" max="200" step="1" value="120">
+      </div>
+
+      <!-- Damping toggle -->
+      <div class="toggle-group">
+        <label class="toggle">
+          <input type="checkbox" id="damping-toggle">
+          <span class="toggle-track"></span>
+        </label>
+        <span>Damping</span>
+      </div>
+
+      <!-- Buttons -->
+      <div class="btn-row">
+        <button id="reset-btn">Reset</button>
+        <button id="pause-btn">Pause</button>
+      </div>
+
+      <!-- Energy Bars -->
+      <div class="energy-bars">
+        <div class="controls-title" style="margin-top: var(--space-md);">Energy</div>
+
+        <div class="energy-bar-group">
+          <div class="energy-bar-label">
+            <span>Kinetic Energy</span>
+            <span class="bar-value" id="ke-value">0.0</span>
+          </div>
+          <div class="energy-bar-track">
+            <div class="energy-bar-fill" id="ke-bar-fill"></div>
+          </div>
+        </div>
+
+        <div class="energy-bar-group">
+          <div class="energy-bar-label">
+            <span>Potential Energy</span>
+            <span class="bar-value" id="pe-value">0.0</span>
+          </div>
+          <div class="energy-bar-track">
+            <div class="energy-bar-fill" id="pe-bar-fill"></div>
+          </div>
+        </div>
+
+        <div class="energy-bar-group">
+          <div class="energy-bar-label">
+            <span>Total Energy</span>
+            <span class="bar-value" id="total-value">0.0</span>
+          </div>
+          <div class="energy-bar-track">
+            <div class="energy-bar-fill" id="total-bar-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="info-text">Click and drag the pendulum bob to set position</p>
+    </div>
+  </div>
+
+  <!-- Topic Content -->
+  <div class="topic-content">
+
+    <!-- Discovery -->
+    <div class="discovery section">
+      <h3>Try this:</h3>
+      <ul>
+        <li>Drag the bob to the highest point. Where is all the energy before you release?</li>
+        <li>Watch the energy bars at the very bottom of the swing. What happened to the PE?</li>
+        <li>Turn on damping. Where does the "lost" energy go?</li>
+      </ul>
+    </div>
+
+    <!-- The Physics -->
+    <div class="section">
+      <h2>The Physics</h2>
+      <p>
+        Energy cannot be created or destroyed, only transformed from one form to another.
+        This is the law of conservation of energy, and it is one of the deepest truths in
+        all of physics.
+      </p>
+      <p>
+        A pendulum makes this visible. At the top of the swing, the bob is high and
+        momentarily still. All its energy is potential, stored in its height above the
+        lowest point. As it falls, that potential energy converts to kinetic energy, the
+        energy of motion. At the very bottom of the arc, the bob moves at maximum speed:
+        all potential has become kinetic.
+      </p>
+      <p>
+        Then it climbs the other side. Kinetic converts back to potential, the bob slows
+        down, stops, and the cycle repeats. The total energy remains constant throughout.
+        In the real world, friction and air resistance convert some mechanical energy into
+        heat, which is why the swing gradually dies down. But the energy itself never
+        disappears. It just becomes harder to use.
+      </p>
+    </div>
+
+    <!-- Math Details -->
+    <details class="math-section section">
+      <summary>Math Details</summary>
+      <div class="math-content">
+        <p>Kinetic energy is the energy of motion:</p>
+        <span class="formula">KE = &frac12;mv&sup2;</span>
+
+        <p>Potential energy is energy stored in position (height h above reference):</p>
+        <span class="formula">PE = mgh</span>
+
+        <p>Conservation of energy says the total is constant:</p>
+        <span class="formula">E<sub>total</sub> = KE + PE = constant</span>
+
+        <p>At the top of the swing: v = 0, so all energy is PE.<br>
+           At the bottom: h = 0, so all energy is KE.</p>
+        <span class="formula">mgh<sub>max</sub> = &frac12;mv<sub>max</sub>&sup2;</span>
+
+        <p>For a simple pendulum, the period of small oscillations:</p>
+        <span class="formula">T &asymp; 2&pi;&radic;(L/g)</span>
+
+        <p>Note: the period depends only on length and gravity, not mass or amplitude (for small angles).</p>
+      </div>
+    </details>
+
+    <!-- Beyond Physics -->
+    <div class="beyond section">
+      <h3>Beyond Physics</h3>
+      <p>
+        <strong>Energy conservation in business.</strong> Effort does not disappear; it transforms.
+        A project that "fails" builds skills, relationships, and institutional knowledge.
+        That is potential energy. When the next opportunity arrives, all that stored energy
+        converts into speed. The team that learned from failure accelerates faster than one
+        starting cold.
+      </p>
+      <p>
+        <strong>Damping as organizational drag.</strong> Every unnecessary meeting, every redundant
+        report, every approval layer is a tiny damping force. Each one dissipates a small
+        amount of momentum as heat. No single one kills the swing, but together they slowly
+        bring the pendulum to a stop. The fix is not to eliminate all damping (some friction
+        is necessary for control), but to be ruthless about which sources of drag actually
+        serve a purpose.
+      </p>
+    </div>
+
+    <!-- Prev / Next Navigation -->
+    <div class="topic-nav">
+      <a class="prev" href="newtons-laws.html">
+        <span class="nav-dir">Previous</span>
+        <span class="nav-title">&larr; Newton's Laws</span>
+      </a>
+      <a class="next" href="entropy.html">
+        <span class="nav-dir">Next</span>
+        <span class="nav-title">Entropy &rarr;</span>
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+<script src="../js/shared.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/topics/energy.js"></script>
+<script>
+  PhysicsUtils.createSim('sim-canvas', fullSketch);
+</script>
+</body>
+</html>

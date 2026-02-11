@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Momentum &amp; Collisions - Physics Playground</title>
+  <style>:root { --accent: #f85149; }</style>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/sim.css">
+  <style>
+    .readout-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-xs) var(--space-md);
+      margin-top: var(--space-md);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+    .readout-grid .readout-label {
+      color: var(--text-secondary);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .readout-grid .readout-val {
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .collision-toggle {
+      display: flex;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-top: var(--space-xs);
+    }
+    .collision-toggle button {
+      flex: 1;
+      padding: var(--space-xs) var(--space-sm);
+      border: none;
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .collision-toggle button.active {
+      background: var(--accent);
+      color: var(--bg-primary);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<main class="container" style="padding-top: var(--space-xl);">
+
+  <!-- Sim Header -->
+  <div class="sim-header">
+    <span class="topic-number">05</span>
+    <h1>Momentum &amp; Collisions</h1>
+  </div>
+
+  <!-- Simulation + Controls -->
+  <div class="sim-layout">
+    <div class="sim-canvas-wrap" id="sim-canvas"></div>
+
+    <div class="sim-controls">
+      <div class="controls-title">Controls</div>
+
+      <!-- Ball A mass -->
+      <div class="control-group">
+        <label>Ball A Mass <span class="value" id="mass-a-value">5</span> kg</label>
+        <input type="range" id="mass-a-slider" min="1" max="20" step="1" value="5">
+      </div>
+
+      <!-- Ball A velocity -->
+      <div class="control-group">
+        <label>Ball A Velocity <span class="value" id="vel-a-value">3</span> m/s</label>
+        <input type="range" id="vel-a-slider" min="-10" max="10" step="0.5" value="3">
+      </div>
+
+      <!-- Ball B mass -->
+      <div class="control-group">
+        <label>Ball B Mass <span class="value" id="mass-b-value">5</span> kg</label>
+        <input type="range" id="mass-b-slider" min="1" max="20" step="1" value="5">
+      </div>
+
+      <!-- Ball B velocity -->
+      <div class="control-group">
+        <label>Ball B Velocity <span class="value" id="vel-b-value">-3</span> m/s</label>
+        <input type="range" id="vel-b-slider" min="-10" max="10" step="0.5" value="-3">
+      </div>
+
+      <!-- Collision type toggle -->
+      <div class="control-group">
+        <label>Collision Type</label>
+        <div class="collision-toggle" id="collision-type">
+          <button class="active" data-type="elastic">Elastic</button>
+          <button data-type="inelastic">Inelastic</button>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="btn-row">
+        <button id="launch-btn" class="primary">Launch</button>
+        <button id="reset-btn">Reset</button>
+        <button id="pause-btn">Pause</button>
+      </div>
+
+      <!-- Live readout -->
+      <div style="margin-top: var(--space-lg);">
+        <div class="controls-title">Readout</div>
+        <div class="readout-grid">
+          <div>
+            <div class="readout-label">Total p (before)</div>
+            <div class="readout-val" id="total-p-before">--</div>
+          </div>
+          <div>
+            <div class="readout-label">Total p (after)</div>
+            <div class="readout-val" id="total-p-after">--</div>
+          </div>
+          <div>
+            <div class="readout-label">Total KE (before)</div>
+            <div class="readout-val" id="total-ke-before">--</div>
+          </div>
+          <div>
+            <div class="readout-label">Total KE (after)</div>
+            <div class="readout-val" id="total-ke-after">--</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Topic Content -->
+  <div class="topic-content">
+
+    <!-- Discovery -->
+    <div class="discovery section">
+      <h3>Try this:</h3>
+      <ul>
+        <li>Set equal masses, equal but opposite velocities. What happens in elastic mode? Now try inelastic.</li>
+        <li>Make ball A 20 kg and ball B 1 kg, both at speed 3. Watch what happens to the small one.</li>
+        <li>Compare total momentum before and after collision. Does it ever change? What about kinetic energy?</li>
+      </ul>
+    </div>
+
+    <!-- The Physics -->
+    <div class="section">
+      <h2>The Physics</h2>
+      <p>
+        Momentum is mass times velocity. It is always conserved in collisions, meaning the
+        total momentum of the system before a collision equals the total momentum after.
+        This comes directly from Newton's third law: when two objects collide, they exert
+        equal and opposite forces on each other for the same duration, producing equal and
+        opposite impulses.
+      </p>
+      <p>
+        Kinetic energy, however, is only conserved in elastic collisions. In inelastic
+        collisions, some kinetic energy converts to heat, sound, and deformation. In a
+        perfectly inelastic collision, the objects stick together and move as one. The
+        kinetic energy lost is maximized in this case, but momentum is still perfectly
+        conserved.
+      </p>
+    </div>
+
+    <!-- Math Details -->
+    <details class="math-section section">
+      <summary>Math Details</summary>
+      <div class="math-content">
+        <p>Momentum of a single object:</p>
+        <span class="formula">p = mv</span>
+
+        <p>Total momentum is conserved in all collisions:</p>
+        <span class="formula">m<sub>1</sub>v<sub>1</sub> + m<sub>2</sub>v<sub>2</sub> = m<sub>1</sub>v<sub>1</sub>' + m<sub>2</sub>v<sub>2</sub>' = constant</span>
+
+        <p>For elastic collisions, kinetic energy is also conserved:</p>
+        <span class="formula">&frac12;m<sub>1</sub>v<sub>1</sub>&sup2; + &frac12;m<sub>2</sub>v<sub>2</sub>&sup2; = &frac12;m<sub>1</sub>v<sub>1</sub>'&sup2; + &frac12;m<sub>2</sub>v<sub>2</sub>'&sup2;</span>
+
+        <p>Solving both equations simultaneously gives the elastic collision result:</p>
+        <span class="formula">v<sub>1</sub>' = ((m<sub>1</sub> - m<sub>2</sub>)v<sub>1</sub> + 2m<sub>2</sub>v<sub>2</sub>) / (m<sub>1</sub> + m<sub>2</sub>)</span>
+
+        <p>For a perfectly inelastic collision, the objects stick together:</p>
+        <span class="formula">v' = (m<sub>1</sub>v<sub>1</sub> + m<sub>2</sub>v<sub>2</sub>) / (m<sub>1</sub> + m<sub>2</sub>)</span>
+      </div>
+    </details>
+
+    <!-- Beyond Physics -->
+    <div class="beyond section">
+      <h3>Beyond Physics</h3>
+      <p>
+        <strong>Momentum in negotiations.</strong> A heavy stakeholder (high mass) moving slowly
+        still carries enormous momentum. Do not underestimate slow-moving incumbents. Their
+        inertia means they are hard to stop once they start moving in a direction.
+      </p>
+      <p>
+        <strong>Elastic vs inelastic in competition.</strong> Some market collisions are elastic:
+        both players bounce off and keep going, maybe in different directions. Others are
+        inelastic (acquisitions): they merge and move as one. The acquirer absorbs the target's
+        momentum. Energy is always lost in the merge, but the combined entity carries the full
+        momentum forward.
+      </p>
+      <p>
+        <strong>Conservation law for teams.</strong> Total team momentum equals the sum of individual
+        efforts times their velocity. One person stopping does not just remove their
+        contribution; it changes the system's total momentum. And in an inelastic team
+        collision (a conflict that sticks), energy gets lost to friction.
+      </p>
+    </div>
+
+    <!-- Prev / Next Navigation -->
+    <div class="topic-nav">
+      <a class="prev" href="gravity.html">
+        <span class="nav-dir">Previous</span>
+        <span class="nav-title">&larr; Gravity &amp; Orbits</span>
+      </a>
+      <a class="next" href="waves.html">
+        <span class="nav-dir">Next</span>
+        <span class="nav-title">Waves &amp; Resonance &rarr;</span>
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+<script src="../js/shared.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/topics/momentum.js"></script>
+<script>
+  PhysicsUtils.createSim('sim-canvas', fullSketch);
+</script>
+</body>
+</html>

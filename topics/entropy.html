@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entropy - Physics Playground</title>
+  <style>:root { --accent: #bc8cff; }</style>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/sim.css">
+</head>
+<body>
+
+<main class="container" style="padding-top: var(--space-xl);">
+
+  <!-- Sim Header -->
+  <div class="sim-header">
+    <span class="topic-number">03</span>
+    <h1>Entropy</h1>
+  </div>
+
+  <!-- Simulation + Controls -->
+  <div class="sim-layout">
+    <div class="sim-canvas-wrap" id="sim-canvas"></div>
+
+    <div class="sim-controls">
+      <div class="controls-title">Controls</div>
+
+      <!-- Particle count slider -->
+      <div class="control-group">
+        <label>Particles <span class="value" id="particle-value">80</span></label>
+        <input type="range" id="particle-slider" min="20" max="200" step="1" value="80">
+      </div>
+
+      <!-- Particle speed slider -->
+      <div class="control-group">
+        <label>Speed <span class="value" id="speed-value">4</span></label>
+        <input type="range" id="speed-slider" min="1" max="10" step="1" value="4">
+      </div>
+
+      <!-- Buttons -->
+      <div class="btn-row">
+        <button id="remove-partition-btn" class="primary">Remove Partition</button>
+      </div>
+      <div class="btn-row" style="margin-top: var(--space-sm);">
+        <button id="reset-btn">Reset</button>
+        <button id="pause-btn">Pause</button>
+      </div>
+
+      <!-- Live stats -->
+      <div style="margin-top: var(--space-lg); font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); line-height: 1.8;">
+        <div>Left: <span id="left-count" style="color: var(--accent);">0</span> &nbsp;|&nbsp; Right: <span id="right-count" style="color: var(--accent);">0</span></div>
+        <div>Entropy: <span id="entropy-value" style="color: var(--accent);">0.000</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Topic Content -->
+  <div class="topic-content">
+
+    <!-- Discovery -->
+    <div class="discovery section">
+      <h3>Try this:</h3>
+      <ul>
+        <li>Remove the partition. Can you get all particles back to one side without resetting?</li>
+        <li>Watch the entropy number. Does it ever go down on its own?</li>
+        <li>Try with just 20 particles vs 200. How does the "randomness" feel different at each scale?</li>
+      </ul>
+    </div>
+
+    <!-- The Physics -->
+    <div class="section">
+      <h2>The Physics</h2>
+      <p>
+        Entropy measures disorder, or more precisely, the number of ways a system can
+        be arranged while looking the same from the outside. The second law of
+        thermodynamics says the entropy of a closed system never decreases. It can stay
+        the same or go up, but it never spontaneously goes down.
+      </p>
+      <p>
+        When you remove the partition, particles spread to fill the entire box. This is
+        irreversible in practice. Statistically, the particles will not spontaneously
+        return to one side. With more particles, the probability of reversal becomes so
+        astronomically small that it effectively never happens in the lifetime of the
+        universe.
+      </p>
+    </div>
+
+    <!-- Math Details -->
+    <details class="math-section section">
+      <summary>Math Details</summary>
+      <div class="math-content">
+        <p>Boltzmann's entropy formula:</p>
+        <span class="formula">S = k<sub>B</sub> ln(&Omega;)</span>
+
+        <p>Where &Omega; is the number of microstates (distinct arrangements). For N particles that can each be on the left or right half:</p>
+        <span class="formula">&Omega; = 2<sup>N</sup> total arrangements</span>
+
+        <p>But only 1 arrangement has all particles on the left side. The probability of spontaneous return:</p>
+        <span class="formula">P = (1/2)<sup>N</sup></span>
+
+        <p>For 100 particles, that is roughly 10<sup>-30</sup>. For 200 particles: 10<sup>-60</sup>. Effectively impossible.</p>
+      </div>
+    </details>
+
+    <!-- Beyond Physics -->
+    <div class="beyond section">
+      <h3>Beyond Physics</h3>
+      <p>
+        <strong>Entropy in information.</strong> Once information leaks, you cannot un-leak it.
+        Data breaches, leaked emails, screenshots of private conversations. The partition
+        is gone, and no amount of effort puts the information back on one side.
+      </p>
+      <p>
+        <strong>Entropy in organizations.</strong> Disorder naturally increases. Without active
+        effort (energy input), teams drift toward chaos. Processes decay, documentation
+        goes stale, technical debt accumulates. Structure requires constant maintenance.
+        The second law applies to companies as much as it does to gas molecules.
+      </p>
+      <p>
+        <strong>Irreversibility in decisions.</strong> Some business decisions are "remove the
+        partition" moments: mergers, public launches, layoffs, going open source.
+        Recognize which decisions are truly irreversible versus those you can walk back.
+        The irreversible ones deserve disproportionately more deliberation.
+      </p>
+    </div>
+
+    <!-- Prev / Next Navigation -->
+    <div class="topic-nav">
+      <a class="prev" href="energy.html">
+        <span class="nav-dir">Previous</span>
+        <span class="nav-title">&larr; Conservation of Energy</span>
+      </a>
+      <a class="next" href="gravity.html">
+        <span class="nav-dir">Next</span>
+        <span class="nav-title">Gravity &amp; Orbits &rarr;</span>
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+<script src="../js/shared.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/topics/entropy.js"></script>
+<script>
+  PhysicsUtils.createSim('sim-canvas', fullSketch);
+</script>
+</body>
+</html>

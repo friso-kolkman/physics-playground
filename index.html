@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d1117">
+  <meta name="description" content="Interactive physics simulations for first-principles thinking">
+
+  <meta property="og:title" content="Physics Playground">
+  <meta property="og:description" content="Interactive physics simulations for first-principles thinking">
+  <meta property="og:type" content="website">
+
+  <title>Physics Playground</title>
+
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/sim.css">
+</head>
+<body>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1>Physics Playground</h1>
+      <p>Interactive simulations that build intuition. Play first, understand second.</p>
+    </div>
+  </section>
+
+  <!-- Card Grid -->
+  <main class="container">
+    <div class="card-grid">
+
+      <!-- 01 Newton's Laws -->
+      <a href="topics/newtons-laws.html" class="card">
+        <div class="card-preview" id="preview-newton"></div>
+        <div class="card-body">
+          <div class="card-number" style="color: #58a6ff;">01 — Newton's Laws</div>
+          <div class="card-title">Push things around.</div>
+          <div class="card-desc">Discover why heavy objects are stubborn.</div>
+        </div>
+      </a>
+
+      <!-- 02 Conservation of Energy -->
+      <a href="topics/energy.html" class="card">
+        <div class="card-preview" id="preview-energy"></div>
+        <div class="card-body">
+          <div class="card-number" style="color: #f0883e;">02 — Conservation of Energy</div>
+          <div class="card-title">Swing a pendulum.</div>
+          <div class="card-desc">Watch energy transform but never disappear.</div>
+        </div>
+      </a>
+
+      <!-- 03 Entropy -->
+      <a href="topics/entropy.html" class="card">
+        <div class="card-preview" id="preview-entropy"></div>
+        <div class="card-body">
+          <div class="card-number" style="color: #bc8cff;">03 — Entropy</div>
+          <div class="card-title">Release particles.</div>
+          <div class="card-desc">See why some things can never be undone.</div>
+        </div>
+      </a>
+
+      <!-- 04 Gravity & Orbits -->
+      <a href="topics/gravity.html" class="card">
+        <div class="card-preview" id="preview-gravity"></div>
+        <div class="card-body">
+          <div class="card-number" style="color: #3fb950;">04 — Gravity & Orbits</div>
+          <div class="card-title">Place masses in space.</div>
+          <div class="card-desc">Watch gravity sculpt orbital paths.</div>
+        </div>
+      </a>
+
+      <!-- 05 Momentum & Collisions -->
+      <a href="topics/momentum.html" class="card">
+        <div class="card-preview" id="preview-momentum"></div>
+        <div class="card-body">
+          <div class="card-number" style="color: #f85149;">05 — Momentum & Collisions</div>
+          <div class="card-title">Smash things together.</div>
+          <div class="card-desc">Learn what's really conserved.</div>
+        </div>
+      </a>
+
+      <!-- 06 Waves & Resonance -->
+      <a href="topics/waves.html" class="card">
+        <div class="card-preview" id="preview-waves"></div>
+        <div class="card-body">
+          <div class="card-number" style="color: #39d353;">06 — Waves & Resonance</div>
+          <div class="card-title">Mix waves.</div>
+          <div class="card-desc">Find the frequency that makes everything shake.</div>
+        </div>
+      </a>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer style="text-align: center; padding: 48px 0 32px; color: var(--text-muted); font-size: 0.875rem;">
+    Built for curiosity.
+  </footer>
+
+  <!-- p5.js -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+
+  <!-- App scripts -->
+  <script src="js/shared.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/topics/newtons-laws.js"></script>
+  <script src="js/topics/energy.js"></script>
+  <script src="js/topics/entropy.js"></script>
+  <script src="js/topics/gravity.js"></script>
+  <script src="js/topics/momentum.js"></script>
+  <script src="js/topics/waves.js"></script>
+
+  <!-- Preview sketches -->
+  <script>
+  (function () {
+    var BG = [13, 17, 23];
+
+    function initPreview(id, sketchFn) {
+      var el = document.getElementById(id);
+      if (!el) return;
+
+      var sketch = new p5(function (p) {
+        var w, h;
+
+        p.setup = function () {
+          w = el.offsetWidth;
+          h = el.offsetHeight;
+          var c = p.createCanvas(w, h);
+          c.style('display', 'block');
+          sketchFn.setup(p, w, h);
+        };
+
+        p.draw = function () {
+          w = p.width;
+          h = p.height;
+          p.background(BG[0], BG[1], BG[2]);
+          sketchFn.draw(p, w, h);
+        };
+      }, el);
+
+      // Resize canvas when container changes size
+      var ro = new ResizeObserver(function (entries) {
+        var rect = entries[0].contentRect;
+        if (rect.width > 0 && rect.height > 0) {
+          sketch.resizeCanvas(rect.width, rect.height);
+        }
+      });
+      ro.observe(el);
+    }
+
+    // ----- Newton: bouncing colored circles -----
+    initPreview('preview-newton', (function () {
+      var balls = [];
+      return {
+        setup: function (p, w, h) {
+          p.noStroke();
+          var colors = ['#58a6ff', '#bc8cff', '#f0883e'];
+          for (var i = 0; i < 5; i++) {
+            var r = p.random(8, 16);
+            balls.push({
+              x: p.random(r, w - r),
+              y: p.random(r, h - r),
+              vx: p.random(-1.5, 1.5),
+              vy: p.random(-1.5, 1.5),
+              r: r,
+              col: colors[i % colors.length]
+            });
+          }
+        },
+        draw: function (p, w, h) {
+          p.noStroke();
+          for (var i = 0; i < balls.length; i++) {
+            var b = balls[i];
+            b.x += b.vx;
+            b.y += b.vy;
+            if (b.x < b.r || b.x > w - b.r) b.vx *= -1;
+            if (b.y < b.r || b.y > h - b.r) b.vy *= -1;
+            b.x = p.constrain(b.x, b.r, w - b.r);
+            b.y = p.constrain(b.y, b.r, h - b.r);
+            p.fill(b.col);
+            p.ellipse(b.x, b.y, b.r * 2);
+          }
+        }
+      };
+    })());
+
+    // ----- Energy: swinging pendulum dot -----
+    initPreview('preview-energy', (function () {
+      var angle, aVel, aAcc, length, originX;
+      return {
+        setup: function (p, w, h) {
+          angle = p.PI / 4;
+          aVel = 0;
+          aAcc = 0;
+          length = h * 0.55;
+          originX = w / 2;
+        },
+        draw: function (p, w, h) {
+          length = h * 0.55;
+          originX = w / 2;
+          var gravity = 0.4;
+          aAcc = (-gravity / length) * p.sin(angle);
+          aVel += aAcc;
+          aVel *= 0.999;
+          angle += aVel;
+
+          var bobX = originX + length * p.sin(angle);
+          var bobY = h * 0.1 + length * p.cos(angle);
+
+          p.stroke(58, 68, 80);
+          p.strokeWeight(1);
+          p.line(originX, h * 0.1, bobX, bobY);
+
+          p.noStroke();
+          var speed = p.abs(aVel);
+          var r = p.map(speed, 0, 0.1, 50, 255);
+          var g = p.map(speed, 0, 0.1, 136, 100);
+          var b = p.map(speed, 0, 0.1, 62, 30);
+          p.fill(r, g, b);
+          p.ellipse(bobX, bobY, 14);
+        }
+      };
+    })());
+
+    // ----- Entropy: random particles spreading -----
+    initPreview('preview-entropy', (function () {
+      var dots = [];
+      return {
+        setup: function (p, w, h) {
+          p.noStroke();
+          for (var i = 0; i < 30; i++) {
+            dots.push({
+              x: w / 2 + p.random(-20, 20),
+              y: h / 2 + p.random(-20, 20),
+              vx: p.random(-0.8, 0.8),
+              vy: p.random(-0.8, 0.8)
+            });
+          }
+        },
+        draw: function (p, w, h) {
+          p.noStroke();
+          for (var i = 0; i < dots.length; i++) {
+            var d = dots[i];
+            d.x += d.vx;
+            d.y += d.vy;
+            if (d.x < 0 || d.x > w) d.vx *= -1;
+            if (d.y < 0 || d.y > h) d.vy *= -1;
+            d.x = p.constrain(d.x, 0, w);
+            d.y = p.constrain(d.y, 0, h);
+            p.fill(188, 140, 255, 180);
+            p.ellipse(d.x, d.y, 5);
+          }
+        }
+      };
+    })());
+
+    // ----- Gravity: dots orbiting a center point -----
+    initPreview('preview-gravity', (function () {
+      var orbiters = [];
+      return {
+        setup: function (p, w, h) {
+          p.noStroke();
+          for (var i = 0; i < 4; i++) {
+            var dist = p.random(25, Math.min(w, h) * 0.35);
+            var a = p.random(p.TWO_PI);
+            var speed = p.map(dist, 25, Math.min(w, h) * 0.35, 0.03, 0.012);
+            orbiters.push({ dist: dist, angle: a, speed: speed });
+          }
+        },
+        draw: function (p, w, h) {
+          var cx = w / 2;
+          var cy = h / 2;
+
+          // Central mass
+          p.fill(63, 185, 80);
+          p.ellipse(cx, cy, 10);
+
+          // Orbiting dots
+          p.noStroke();
+          for (var i = 0; i < orbiters.length; i++) {
+            var o = orbiters[i];
+            o.angle += o.speed;
+            var ox = cx + o.dist * p.cos(o.angle);
+            var oy = cy + o.dist * p.sin(o.angle) * 0.6;
+            p.fill(63, 185, 80, 200);
+            p.ellipse(ox, oy, 6);
+
+            // Faint trail
+            p.fill(63, 185, 80, 30);
+            for (var t = 1; t <= 6; t++) {
+              var ta = o.angle - o.speed * t * 3;
+              var tx = cx + o.dist * p.cos(ta);
+              var ty = cy + o.dist * p.sin(ta) * 0.6;
+              p.ellipse(tx, ty, 3);
+            }
+          }
+        }
+      };
+    })());
+
+    // ----- Momentum: two dots bouncing horizontally -----
+    initPreview('preview-momentum', (function () {
+      var a, b;
+      return {
+        setup: function (p, w, h) {
+          a = { x: w * 0.25, vx: 1.2, r: 12 };
+          b = { x: w * 0.75, vx: -0.8, r: 10 };
+        },
+        draw: function (p, w, h) {
+          var cy = h / 2;
+
+          a.x += a.vx;
+          b.x += b.vx;
+
+          // Wall bounces
+          if (a.x < a.r) { a.x = a.r; a.vx *= -1; }
+          if (a.x > w - a.r) { a.x = w - a.r; a.vx *= -1; }
+          if (b.x < b.r) { b.x = b.r; b.vx *= -1; }
+          if (b.x > w - b.r) { b.x = w - b.r; b.vx *= -1; }
+
+          // Ball-ball collision
+          var dist = p.abs(a.x - b.x);
+          if (dist < a.r + b.r) {
+            var tempV = a.vx;
+            a.vx = b.vx;
+            b.vx = tempV;
+            // Separate
+            var overlap = (a.r + b.r - dist) / 2;
+            if (a.x < b.x) { a.x -= overlap; b.x += overlap; }
+            else { a.x += overlap; b.x -= overlap; }
+          }
+
+          p.noStroke();
+          p.fill(248, 81, 73);
+          p.ellipse(a.x, cy, a.r * 2);
+          p.fill(248, 81, 73, 170);
+          p.ellipse(b.x, cy, b.r * 2);
+        }
+      };
+    })());
+
+    // ----- Waves: animating sine wave -----
+    initPreview('preview-waves', (function () {
+      var t = 0;
+      return {
+        setup: function (p) {
+          t = 0;
+        },
+        draw: function (p, w, h) {
+          var cy = h / 2;
+          p.noFill();
+          p.strokeWeight(2);
+
+          // Two overlapping waves
+          var waves = [
+            { amp: h * 0.18, freq: 0.02, speed: 0.04, col: [57, 211, 83, 200] },
+            { amp: h * 0.12, freq: 0.035, speed: 0.06, col: [57, 211, 83, 80] }
+          ];
+
+          for (var wi = 0; wi < waves.length; wi++) {
+            var wv = waves[wi];
+            p.stroke(wv.col[0], wv.col[1], wv.col[2], wv.col[3]);
+            p.beginShape();
+            for (var x = 0; x <= w; x += 3) {
+              var y = cy + wv.amp * p.sin(x * wv.freq + t * wv.speed);
+              p.vertex(x, y);
+            }
+            p.endShape();
+          }
+
+          t++;
+        }
+      };
+    })());
+
+  })();
+  </script>
+
+</body>
+</html>

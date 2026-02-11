@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waves & Resonance - Physics Playground</title>
+  <style>:root { --accent: #39d353; }</style>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/sim.css">
+  <style>
+    .mode-switch {
+      display: flex;
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border-primary);
+    }
+    .mode-switch label {
+      flex: 1;
+      text-align: center;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      color: var(--text-secondary);
+    }
+    .mode-switch input[type="radio"] {
+      display: none;
+    }
+    .mode-switch input[type="radio"]:checked + label {
+      background: var(--accent);
+      color: var(--bg-primary);
+      font-weight: 600;
+    }
+    .readonly-display {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-primary);
+      border-radius: 4px;
+      padding: 4px 8px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+<main class="container" style="padding-top: var(--space-xl);">
+
+  <!-- Sim Header -->
+  <div class="sim-header">
+    <span class="topic-number">06</span>
+    <h1>Waves & Resonance</h1>
+  </div>
+
+  <!-- Simulation + Controls -->
+  <div class="sim-layout">
+    <div class="sim-canvas-wrap" id="sim-canvas"></div>
+
+    <div class="sim-controls">
+
+      <!-- Mode Toggle -->
+      <div class="controls-title">Mode</div>
+      <div class="mode-switch" id="mode-toggle">
+        <input type="radio" name="sim-mode" id="mode-superposition" value="superposition" checked>
+        <label for="mode-superposition">Superposition</label>
+        <input type="radio" name="sim-mode" id="mode-resonance" value="resonance">
+        <label for="mode-resonance">Resonance</label>
+      </div>
+
+      <!-- Section 1: Wave Superposition -->
+      <div id="superposition-controls">
+        <div class="controls-title" style="margin-top: var(--space-md);">Wave Superposition</div>
+
+        <div class="control-group">
+          <label>Wave 1 Frequency <span class="value" id="freq1-value">1.0</span> Hz</label>
+          <input type="range" id="freq1-slider" min="0.5" max="5" step="0.1" value="1">
+        </div>
+
+        <div class="control-group">
+          <label>Wave 1 Amplitude <span class="value" id="amp1-value">50</span> px</label>
+          <input type="range" id="amp1-slider" min="10" max="100" step="1" value="50">
+        </div>
+
+        <div class="control-group">
+          <label>Wave 2 Frequency <span class="value" id="freq2-value">1.5</span> Hz</label>
+          <input type="range" id="freq2-slider" min="0.5" max="5" step="0.1" value="1.5">
+        </div>
+
+        <div class="control-group">
+          <label>Wave 2 Amplitude <span class="value" id="amp2-value">50</span> px</label>
+          <input type="range" id="amp2-slider" min="10" max="100" step="1" value="50">
+        </div>
+
+        <div class="toggle-group">
+          <label class="toggle">
+            <input type="checkbox" id="show-individual" checked>
+            <span class="toggle-track"></span>
+          </label>
+          <span>Show individual waves</span>
+        </div>
+      </div>
+
+      <!-- Section 2: Resonance -->
+      <div id="resonance-controls" style="display: none;">
+        <div class="controls-title" style="margin-top: var(--space-md);">Resonance</div>
+
+        <div class="control-group">
+          <label>Natural Frequency <span class="readonly-display" id="natural-freq">2.00 Hz</span></label>
+        </div>
+
+        <div class="control-group">
+          <label>Driving Frequency <span class="value" id="drive-freq-value">0.5</span> Hz</label>
+          <input type="range" id="drive-freq-slider" min="0.1" max="5" step="0.05" value="0.5">
+        </div>
+
+        <div class="control-group">
+          <label>Driving Amplitude <span class="value" id="drive-amp-value">5</span></label>
+          <input type="range" id="drive-amp-slider" min="1" max="20" step="0.5" value="5">
+        </div>
+
+        <div class="control-group">
+          <label>Damping <span class="value" id="damping-value">0.05</span></label>
+          <input type="range" id="damping-slider" min="0.01" max="0.5" step="0.01" value="0.05">
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="btn-row" style="margin-top: var(--space-md);">
+        <button id="reset-btn">Reset</button>
+        <button id="pause-btn">Pause</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Topic Content -->
+  <div class="topic-content">
+
+    <!-- Discovery -->
+    <div class="discovery section">
+      <h3>Try this:</h3>
+      <ul>
+        <li>Set both waves to the same frequency. Now slowly increase Wave 2's frequency. What pattern appears?</li>
+        <li>Switch to Resonance mode. Slowly sweep the driving frequency. What happens when it matches the natural frequency?</li>
+        <li>In Resonance mode, increase damping. How does the peak amplitude change?</li>
+      </ul>
+    </div>
+
+    <!-- The Physics -->
+    <div class="section">
+      <h2>The Physics</h2>
+      <p>
+        Waves combine through superposition &mdash; overlapping waves add their heights at every point.
+        When two waves share the same frequency, the result depends on their phase relationship:
+        perfectly in sync gives constructive interference (double the height), perfectly out of
+        sync gives destructive interference (they cancel). When the frequencies differ slightly,
+        you hear beats &mdash; a periodic pulsing as the waves drift in and out of phase.
+      </p>
+      <p>
+        Resonance is what happens when you push a system at its natural frequency. Every object has a
+        frequency at which it naturally vibrates &mdash; a swing, a bridge, a wine glass. Push at that
+        frequency and the amplitude grows dramatically, because each push arrives at exactly the right
+        moment to add energy. Damping is the only thing preventing infinite growth. Without it,
+        resonance would shake any system apart.
+      </p>
+    </div>
+
+    <!-- Math Details -->
+    <details class="math-section section">
+      <summary>Math Details</summary>
+      <div class="math-content">
+        <p>A basic sinusoidal wave:</p>
+        <span class="formula">y = A sin(2&pi;ft + &phi;)</span>
+
+        <p>The principle of superposition &mdash; waves add linearly:</p>
+        <span class="formula">y<sub>total</sub> = y&sub1; + y&sub2;</span>
+
+        <p>When two waves have slightly different frequencies, the beat frequency:</p>
+        <span class="formula">f<sub>beat</sub> = |f&sub1; &minus; f&sub2;|</span>
+
+        <p>Resonance amplitude of a driven damped oscillator:</p>
+        <span class="formula">A = F&sub0; / &radic;((&omega;&sub0;&sup2; &minus; &omega;&sup2;)&sup2; + (2&gamma;&omega;)&sup2;)</span>
+
+        <p>At resonance (&omega; = &omega;&sub0;), the amplitude peaks at:</p>
+        <span class="formula">A<sub>max</sub> = F&sub0; / (2&gamma;&omega;&sub0;)</span>
+      </div>
+    </details>
+
+    <!-- Beyond Physics -->
+    <div class="beyond section">
+      <h3>Beyond Physics</h3>
+      <p>
+        <strong>Resonance in messaging.</strong> When your message frequency matches your audience's
+        natural frequency &mdash; their concerns, their timing, their mood &mdash; impact is amplified
+        massively. The same pitch delivered at the wrong moment falls flat. Delivered when the audience
+        is already oscillating in that direction, it builds to something much larger than the input.
+        Great leaders and marketers are resonance-finders.
+      </p>
+      <p>
+        <strong>Superposition in culture.</strong> Company culture is the superposition of all individual
+        behaviors. When values are aligned, you get constructive interference: each person amplifies the
+        others. When values conflict, you get destructive interference: effort cancels out. Culture is
+        not what you write on the wall. It is the waveform that emerges from everyone's individual waves.
+      </p>
+      <p>
+        <strong>Damping as feedback loops.</strong> Without damping, resonance grows without limit and
+        things break &mdash; the Tacoma Narrows Bridge being the textbook example. In organizations,
+        healthy feedback loops are damping mechanisms. They prevent runaway oscillations: hype cycles,
+        blame spirals, unchecked growth. Some friction is not a bug. It is the only thing keeping the
+        system from tearing itself apart.
+      </p>
+    </div>
+
+    <!-- Prev / Next Navigation -->
+    <div class="topic-nav">
+      <a class="prev" href="momentum.html">
+        <span class="nav-dir">Previous</span>
+        <span class="nav-title">&larr; Momentum & Collisions</span>
+      </a>
+      <!-- Last topic, no next -->
+    </div>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+<script src="../js/shared.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/topics/waves.js"></script>
+<script>
+  PhysicsUtils.createSim('sim-canvas', fullSketch);
+</script>
+</body>
+</html>

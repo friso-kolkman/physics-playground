@@ -1,0 +1,179 @@
+/* Simulation Layout */
+
+.sim-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.sim-header .topic-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg-primary);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.sim-header h1 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* Grid: canvas + controls side by side */
+.sim-layout {
+  display: grid;
+  grid-template-columns: 65% 35%;
+  gap: var(--space-md);
+  margin-bottom: var(--space-2xl);
+}
+
+.sim-canvas-wrap {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  position: relative;
+  touch-action: none;
+}
+
+.sim-canvas-wrap canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.sim-controls {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  overflow-y: auto;
+  max-height: 0;
+  min-height: 0;
+}
+
+/* JS sets max-height to match canvas after render; fallback */
+.sim-layout .sim-controls {
+  max-height: calc((65vw - var(--space-md)) * 9 / 16);
+}
+
+.controls-title {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+
+/* Control rows */
+.control-group {
+  margin-bottom: var(--space-md);
+}
+
+.control-group label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+.control-group .value {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  font-size: 0.85rem;
+}
+
+.control-group input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+/* Button row */
+.btn-row {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  margin-top: var(--space-md);
+}
+
+.btn-row button {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  padding: var(--space-xs) var(--space-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-row button:hover {
+  background: var(--border-color);
+  border-color: var(--text-secondary);
+}
+
+.btn-row button.active,
+.btn-row button.primary {
+  background: var(--accent);
+  color: var(--bg-primary);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+/* Topic content below simulation */
+.topic-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--space-lg) 0;
+}
+
+.topic-content h2 {
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.topic-content p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+.section {
+  margin-bottom: var(--space-2xl);
+}
+
+/* Responsive: stack on mobile */
+@media (max-width: 768px) {
+  .sim-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sim-canvas-wrap {
+    aspect-ratio: 4 / 3;
+  }
+
+  .sim-layout .sim-controls {
+    max-height: none;
+  }
+
+  .sim-header h1 {
+    font-size: 1.2rem;
+  }
+
+  .topic-content {
+    padding: var(--space-md) var(--space-sm);
+  }
+}

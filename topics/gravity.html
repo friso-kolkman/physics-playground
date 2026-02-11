@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gravity & Orbits - Physics Playground</title>
+  <style>:root { --accent: #3fb950; }</style>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/sim.css">
+</head>
+<body>
+
+<main class="container" style="padding-top: var(--space-xl);">
+
+  <!-- Sim Header -->
+  <div class="sim-header">
+    <span class="topic-number">04</span>
+    <h1>Gravity & Orbits</h1>
+  </div>
+
+  <!-- Simulation + Controls -->
+  <div class="sim-layout">
+    <div class="sim-canvas-wrap" id="sim-canvas"></div>
+
+    <div class="sim-controls">
+      <div class="controls-title">Controls</div>
+
+      <!-- New Body Mass slider -->
+      <div class="control-group">
+        <label>New Body Mass <span class="value" id="mass-value">10</span></label>
+        <input type="range" id="mass-slider" min="1" max="50" step="1" value="10">
+      </div>
+
+      <!-- Trails toggle -->
+      <div class="toggle-group">
+        <label class="toggle">
+          <input type="checkbox" id="trails-toggle" checked>
+          <span class="toggle-track"></span>
+        </label>
+        <span>Trails</span>
+      </div>
+
+      <!-- Gravitational constant G slider -->
+      <div class="control-group">
+        <label>Gravitational Constant G <span class="value" id="g-value">1.0</span></label>
+        <input type="range" id="g-slider" min="0.1" max="5" step="0.1" value="1">
+      </div>
+
+      <!-- Action buttons -->
+      <div class="btn-row">
+        <button id="add-body-btn" class="primary">Add Body</button>
+        <button id="clear-btn">Clear All</button>
+      </div>
+      <div class="btn-row" style="margin-top: var(--space-sm);">
+        <button id="reset-btn">Reset Demo</button>
+        <button id="pause-btn">Pause</button>
+      </div>
+
+      <!-- Instructions -->
+      <p style="font-size: 0.78rem; color: var(--text-secondary); margin-top: var(--space-md); line-height: 1.5;">
+        Click to place a mass. Click+drag to set initial velocity.
+      </p>
+
+      <!-- Presets -->
+      <div class="controls-title" style="margin-top: var(--space-md);">Presets</div>
+      <div class="btn-row">
+        <button id="preset-binary">Binary Orbit</button>
+        <button id="preset-solar">Solar System</button>
+        <button id="preset-figure8">Figure-8</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Topic Content -->
+  <div class="topic-content">
+
+    <!-- Discovery -->
+    <div class="discovery section">
+      <h3>Try this:</h3>
+      <ul>
+        <li>Place two equal masses. Can you get them to orbit each other?</li>
+        <li>Add a tiny third body to a stable binary. How long until chaos?</li>
+        <li>Try the Solar System preset. Remove the sun. What happens to the planets?</li>
+      </ul>
+    </div>
+
+    <!-- The Physics -->
+    <div class="section">
+      <h2>The Physics</h2>
+      <p>
+        Newton's law of universal gravitation: every mass attracts every other mass.
+        The force is proportional to both masses and inversely proportional to the
+        square of the distance between them. This creates orbits &mdash; objects
+        perpetually falling around each other but moving sideways fast enough that
+        they never land.
+      </p>
+      <p>
+        Two bodies is a solved problem. Add a third body and the math becomes
+        unsolvable in general. Tiny changes in initial conditions lead to wildly
+        different outcomes. This is the three-body problem, and it is one of the
+        oldest open problems in physics. Chaos is not randomness &mdash; it is
+        deterministic unpredictability.
+      </p>
+    </div>
+
+    <!-- Math Details -->
+    <details class="math-section section">
+      <summary>Math Details</summary>
+      <div class="math-content">
+        <p>Gravitational force between two masses:</p>
+        <span class="formula">F = G(m&sub1;m&sub2;) / r&sup2;</span>
+
+        <p>Circular orbital velocity at radius r around mass M:</p>
+        <span class="formula">v = &radic;(GM / r)</span>
+
+        <p>Orbital period (Kepler's third law):</p>
+        <span class="formula">T = 2&pi;&radic;(r&sup3; / GM)</span>
+
+        <p>Escape velocity from a mass M at distance r:</p>
+        <span class="formula">v<sub>escape</sub> = &radic;(2GM / r)</span>
+      </div>
+    </details>
+
+    <!-- Beyond Physics -->
+    <div class="beyond section">
+      <h3>Beyond Physics</h3>
+      <p>
+        <strong>Gravity as network effects.</strong> The bigger you get, the more you
+        attract. Platforms like marketplaces have "gravitational mass" &mdash; users
+        attract more users, sellers attract more buyers. Once a platform reaches
+        critical mass, its pull becomes nearly inescapable. This is not metaphor;
+        the math of attraction scales the same way.
+      </p>
+      <p>
+        <strong>Orbital lock-in.</strong> Once you are in orbit around a
+        platform or ecosystem, escape requires enormous velocity &mdash; switching
+        costs. Your data, integrations, and habits all add orbital momentum. Apple,
+        Google, and Amazon know this. They do not need to trap you; gravity does it.
+      </p>
+      <p>
+        <strong>The three-body problem in business.</strong> Two competitors is a
+        stable system. A duopoly finds equilibrium. Add a disruptive third entrant
+        and the outcome becomes genuinely unpredictable. Uber/Lyft was stable until
+        ride-sharing regulation changed the game. Stability is an artifact of simple
+        systems.
+      </p>
+    </div>
+
+    <!-- Prev / Next Navigation -->
+    <div class="topic-nav">
+      <a class="prev" href="entropy.html">
+        <span class="nav-dir">Previous</span>
+        <span class="nav-title">&larr; Entropy</span>
+      </a>
+      <a class="next" href="momentum.html">
+        <span class="nav-dir">Next</span>
+        <span class="nav-title">Momentum & Collisions &rarr;</span>
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+<script src="../js/shared.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/topics/gravity.js"></script>
+<script>
+  PhysicsUtils.createSim('sim-canvas', fullSketch);
+</script>
+</body>
+</html>
