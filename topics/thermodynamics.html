@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thermodynamics - Physics Playground</title>
+  <style>:root { --accent: #da5b0d; }</style>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/sim.css">
+</head>
+<body>
+
+<main class="container" style="padding-top: var(--space-xl);">
+
+  <!-- Sim Header -->
+  <div class="sim-header">
+    <span class="topic-number">09</span>
+    <h1>Thermodynamics</h1>
+  </div>
+
+  <!-- Simulation + Controls -->
+  <div class="sim-layout">
+    <div class="sim-canvas-wrap" id="sim-canvas"></div>
+
+    <div class="sim-controls">
+      <div class="controls-title">Controls</div>
+
+      <!-- Temperature slider -->
+      <div class="control-group">
+        <label>Temperature <span class="value" id="temp-value">300</span> K</label>
+        <input type="range" id="temp-slider" min="100" max="1000" step="10" value="300">
+      </div>
+
+      <!-- Particle Count slider -->
+      <div class="control-group">
+        <label>Particles <span class="value" id="count-value">50</span></label>
+        <input type="range" id="count-slider" min="10" max="200" step="5" value="50">
+      </div>
+
+      <!-- Lock Piston toggle -->
+      <div class="toggle-group">
+        <label class="toggle">
+          <input type="checkbox" id="lock-piston">
+          <span class="toggle-track"></span>
+        </label>
+        <span>Lock Piston</span>
+      </div>
+
+      <!-- Speed Colors toggle -->
+      <div class="toggle-group">
+        <label class="toggle">
+          <input type="checkbox" id="speed-colors" checked>
+          <span class="toggle-track"></span>
+        </label>
+        <span>Speed Colors</span>
+      </div>
+
+      <!-- Readouts -->
+      <div style="margin-top: var(--space-lg); font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); line-height: 1.8;">
+        <div>P: <span id="pressure-val" style="color: var(--accent);">0</span> &nbsp;|&nbsp; V: <span id="volume-val" style="color: var(--accent);">0</span></div>
+        <div>T: <span id="temp-val" style="color: var(--accent);">300</span> K &nbsp;|&nbsp; n: <span id="n-val" style="color: var(--accent);">50</span></div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="btn-row" style="margin-top: var(--space-md);">
+        <button id="reset-btn">Reset</button>
+        <button id="pause-btn">Pause</button>
+      </div>
+
+      <!-- Presets -->
+      <div class="controls-title" style="margin-top: var(--space-md);">Presets</div>
+      <div class="btn-row">
+        <button id="preset-isothermal">Isothermal Compression</button>
+        <button id="preset-isobaric">Isobaric Expansion</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Topic Content -->
+  <div class="topic-content">
+
+    <!-- Discovery -->
+    <div class="discovery section">
+      <h3>Try this:</h3>
+      <ul>
+        <li>Drag the piston to halve the volume. Watch pressure double &mdash; that's Boyle's Law in action.</li>
+        <li>Lock the piston and double the temperature. Pressure doubles. Now unlock &mdash; the piston pushes out.</li>
+        <li>Try the Isothermal Compression preset. Watch the PV diagram trace a perfect hyperbola.</li>
+      </ul>
+    </div>
+
+    <!-- The Physics -->
+    <div class="section">
+      <h2>The Physics</h2>
+      <p>
+        The ideal gas law, PV = nRT, links pressure, volume, temperature, and particle count
+        into a single elegant equation. It emerges from kinetic theory: gas pressure is simply
+        the aggregate of countless molecular collisions against the container walls. Every particle
+        bouncing off a surface delivers a tiny impulse; sum them all up and you get a measurable,
+        predictable force.
+      </p>
+      <p>
+        Boyle's Law says that at constant temperature, pressure and volume are inversely proportional &mdash;
+        compress a gas and the particles hit the walls more often. Charles's Law says that at constant
+        pressure, volume grows with temperature &mdash; hotter particles move faster and push the walls outward.
+      </p>
+      <p>
+        The path matters. In an isothermal process (constant temperature), the gas exchanges heat with
+        its surroundings to maintain equilibrium &mdash; compression is gradual and reversible. In an
+        adiabatic process (no heat exchange), compression heats the gas and expansion cools it.
+        The same start and end states can be reached by different paths, but the work done depends
+        on which path you take.
+      </p>
+    </div>
+
+    <!-- Math Details -->
+    <details class="math-section section">
+      <summary>Math Details</summary>
+      <div class="math-content">
+        <p>The ideal gas law:</p>
+        <span class="formula">PV = nRT</span>
+
+        <p>Kinetic pressure from molecular motion (average over many particles):</p>
+        <span class="formula">P = &frac13; &rho; v&sup2;</span>
+
+        <p>Boyle's Law &mdash; constant temperature:</p>
+        <span class="formula">P&sub1;V&sub1; = P&sub2;V&sub2;</span>
+
+        <p>Adiabatic process (no heat exchange):</p>
+        <span class="formula">PV<sup>&gamma;</sup> = const</span>
+
+        <p>Where &gamma; is the heat capacity ratio (5/3 for monatomic ideal gas).</p>
+      </div>
+    </details>
+
+    <!-- Beyond Physics -->
+    <div class="beyond section">
+      <h3>Beyond Physics</h3>
+      <p>
+        <strong>PV=nRT for Organizations.</strong> Pressure (urgency), volume (scope), temperature
+        (energy/resources), and particle count (team size) are linked. You can't increase scope
+        without either adding people, raising urgency, or pouring in more energy. Reduce scope
+        and you relieve pressure. The equation always balances &mdash; pretending otherwise is how
+        teams burn out.
+      </p>
+      <p>
+        <strong>The Path Matters.</strong> Isothermal change is gradual &mdash; the system stays in
+        equilibrium at every step. Adiabatic change is sudden &mdash; no time for heat exchange,
+        and internal temperature spikes. Reorganizations, pivots, layoffs: the same destination
+        reached slowly (with communication) vs. suddenly (without) produces very different outcomes.
+        The journey shapes the destination.
+      </p>
+      <p>
+        <strong>Pressure Comes from Collisions.</strong> Gas pressure isn't one big force &mdash; it's
+        the aggregate of millions of tiny molecular impacts. Organizational pressure works the same way.
+        It's not one massive crisis; it's the accumulation of small interactions: Slack pings, context
+        switches, unclear ownership, meetings about meetings. Fix the micro-collisions and the macro-pressure drops.
+      </p>
+    </div>
+
+    <!-- Prev / Next Navigation -->
+    <div class="topic-nav">
+      <a class="prev" href="projectile.html">
+        <span class="nav-dir">Previous</span>
+        <span class="nav-title">&larr; Projectile Motion</span>
+      </a>
+      <a class="next" href="optics.html">
+        <span class="nav-dir">Next</span>
+        <span class="nav-title">Optics &amp; Light &rarr;</span>
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+<script src="../js/shared.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/topics/thermodynamics.js"></script>
+<script>
+  PhysicsUtils.createSim('sim-canvas', fullSketch);
+</script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projectile Motion - Physics Playground</title>
+  <style>:root { --accent: #f778ba; }</style>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/sim.css">
+  <style>
+    .readout-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-xs) var(--space-sm);
+      margin-top: var(--space-md);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+    .readout-grid .readout-label {
+      color: var(--text-secondary);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .readout-grid .readout-val {
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<main class="container" style="padding-top: var(--space-xl);">
+
+  <!-- Sim Header -->
+  <div class="sim-header">
+    <span class="topic-number">08</span>
+    <h1>Projectile Motion</h1>
+  </div>
+
+  <!-- Simulation + Controls -->
+  <div class="sim-layout">
+    <div class="sim-canvas-wrap" id="sim-canvas"></div>
+
+    <div class="sim-controls">
+      <div class="controls-title">Controls</div>
+
+      <!-- Launch Angle -->
+      <div class="control-group">
+        <label>Launch Angle <span class="value" id="angle-value">45</span>&deg;</label>
+        <input type="range" id="angle-slider" min="5" max="85" step="1" value="45">
+      </div>
+
+      <!-- Launch Velocity -->
+      <div class="control-group">
+        <label>Launch Velocity <span class="value" id="velocity-value">25</span> m/s</label>
+        <input type="range" id="velocity-slider" min="5" max="50" step="1" value="25">
+      </div>
+
+      <!-- Air Resistance Toggle -->
+      <div class="toggle-group">
+        <label class="toggle">
+          <input type="checkbox" id="drag-toggle">
+          <span class="toggle-track"></span>
+        </label>
+        <span>Air Resistance</span>
+      </div>
+
+      <!-- Drag Coefficient (hidden unless drag on) -->
+      <div id="drag-controls" style="display: none;">
+        <div class="control-group">
+          <label>Drag Coefficient <span class="value" id="drag-value">0.1</span></label>
+          <input type="range" id="drag-slider" min="0.01" max="0.5" step="0.01" value="0.1">
+        </div>
+      </div>
+
+      <!-- Show Components Toggle -->
+      <div class="toggle-group">
+        <label class="toggle">
+          <input type="checkbox" id="components-toggle">
+          <span class="toggle-track"></span>
+        </label>
+        <span>Show Components (Vx/Vy)</span>
+      </div>
+
+      <!-- Readout -->
+      <div style="margin-top: var(--space-md);">
+        <div class="controls-title">Readout</div>
+        <div class="readout-grid">
+          <div>
+            <div class="readout-label">Range</div>
+            <div class="readout-val" id="range-val">--</div>
+          </div>
+          <div>
+            <div class="readout-label">Max Height</div>
+            <div class="readout-val" id="height-val">--</div>
+          </div>
+          <div>
+            <div class="readout-label">Flight Time</div>
+            <div class="readout-val" id="time-val">--</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="btn-row" style="margin-top: var(--space-md);">
+        <button id="fire-btn" class="primary">Fire</button>
+        <button id="clear-btn">Clear Trails</button>
+        <button id="reset-btn">Reset</button>
+        <button id="pause-btn">Pause</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Topic Content -->
+  <div class="topic-content">
+
+    <!-- Discovery -->
+    <div class="discovery section">
+      <h3>Try this:</h3>
+      <ul>
+        <li>Fire at 30&deg; and then at 60&deg; with the same speed. Notice they land at the same spot &mdash; complementary angles share the same range.</li>
+        <li>Turn on air resistance. The optimal angle drops below 45&deg;. Real projectiles always peak earlier.</li>
+        <li>Toggle Show Components. Watch Vx stay perfectly constant while Vy reverses at the peak.</li>
+      </ul>
+    </div>
+
+    <!-- The Physics -->
+    <div class="section">
+      <h2>The Physics</h2>
+      <p>
+        Projectile motion is two independent motions combined: constant velocity horizontally
+        and uniform acceleration vertically. Gravity only acts downward, so the horizontal
+        component of velocity never changes (in a vacuum). The vertical component decelerates
+        on the way up, reaches zero at the peak, then accelerates on the way down &mdash;
+        perfectly symmetric.
+      </p>
+      <p>
+        Complementary angles (like 30&deg; and 60&deg;) yield the same range because
+        sin(2&theta;) is symmetric around 45&deg;. At 45&deg; you get the maximum range
+        because sin(90&deg;) = 1. But this only holds without air resistance. With drag,
+        the horizontal velocity decays over time, so a lower angle that reaches top speed
+        sooner actually travels farther. The real-world optimal angle is always below 45&deg;.
+      </p>
+    </div>
+
+    <!-- Math Details -->
+    <details class="math-section section">
+      <summary>Math Details</summary>
+      <div class="math-content">
+        <p>Horizontal and vertical positions (no drag):</p>
+        <span class="formula">x = v&sdot;cos(&theta;)&sdot;t</span>
+        <span class="formula">y = v&sdot;sin(&theta;)&sdot;t &minus; &frac12;g&sdot;t&sup2;</span>
+
+        <p>Range (landing distance on flat ground):</p>
+        <span class="formula">R = v&sup2;&sdot;sin(2&theta;) / g</span>
+
+        <p>Maximum height:</p>
+        <span class="formula">H = v&sup2;&sdot;sin&sup2;(&theta;) / (2g)</span>
+
+        <p>Total flight time:</p>
+        <span class="formula">T = 2v&sdot;sin(&theta;) / g</span>
+
+        <p>With quadratic drag, the force is:</p>
+        <span class="formula">F<sub>drag</sub> = &minus;C<sub>d</sub>&sdot;v&sdot;|v|</span>
+        <p>This has no closed-form solution &mdash; the simulation uses numerical (Euler) integration.</p>
+      </div>
+    </details>
+
+    <!-- Beyond Physics -->
+    <div class="beyond section">
+      <h3>Beyond Physics</h3>
+      <p>
+        <strong>Decompose the Problem.</strong> Projectile motion is powerful because it splits
+        a complex 2D trajectory into two simple 1D problems. When facing something overwhelming,
+        find the independent axes. Revenue is price times volume. Growth is acquisition minus churn.
+        Separate the variables, solve each one, then recombine.
+      </p>
+      <p>
+        <strong>The 45&deg; Tradeoff.</strong> Maximum range happens at 45&deg; &mdash; the perfect
+        balance between horizontal speed and time aloft. In any optimization, there is an angle
+        that maximizes reach: too steep and you go high but not far, too flat and you never gain
+        altitude. The sweet spot between speed and thoroughness, between shipping fast and
+        building right, is your 45&deg;.
+      </p>
+      <p>
+        <strong>Air Resistance Changes the Optimum.</strong> In a vacuum, 45&deg; is mathematically
+        optimal. Add friction and the real optimum drops. Theory gives you a starting point, but
+        the real world has drag &mdash; bureaucracy, market friction, human irrationality. The
+        optimal strategy in practice is always a bit more aggressive than theory suggests, because
+        friction eats away at everything equally.
+      </p>
+    </div>
+
+    <!-- Prev / Next Navigation -->
+    <div class="topic-nav">
+      <a class="prev" href="electrostatics.html">
+        <span class="nav-dir">Previous</span>
+        <span class="nav-title">&larr; Electrostatics &amp; Fields</span>
+      </a>
+      <a class="next" href="thermodynamics.html">
+        <span class="nav-dir">Next</span>
+        <span class="nav-title">Thermodynamics &rarr;</span>
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+<script src="../js/shared.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/topics/projectile.js"></script>
+<script>
+  PhysicsUtils.createSim('sim-canvas', fullSketch);
+</script>
+</body>
+</html>

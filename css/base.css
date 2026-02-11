@@ -21,6 +21,12 @@
   --color-gravity: #3fb950;
   --color-momentum: #f85149;
   --color-waves: #39d353;
+  --color-electrostatics: #e3b341;
+  --color-projectile: #f778ba;
+  --color-thermo: #da5b0d;
+  --color-optics: #56d4dd;
+  --color-circuits: #d4a72c;
+  --color-relativity: #8957e5;
 
   /* Current topic accent (overridden per page) */
   --accent: #58a6ff;

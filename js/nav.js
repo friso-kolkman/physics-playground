@@ -7,6 +7,12 @@
     { id: "gravity", title: "Gravity & Orbits", color: "#3fb950" },
     { id: "momentum", title: "Momentum & Collisions", color: "#f85149" },
     { id: "waves", title: "Waves & Resonance", color: "#39d353" },
+    { id: "electrostatics", title: "Electrostatics & Fields", color: "#e3b341" },
+    { id: "projectile", title: "Projectile Motion", color: "#f778ba" },
+    { id: "thermodynamics", title: "Thermodynamics", color: "#da5b0d" },
+    { id: "optics", title: "Optics & Light", color: "#56d4dd" },
+    { id: "circuits", title: "Circuits & Electricity", color: "#d4a72c" },
+    { id: "relativity", title: "Special Relativity", color: "#8957e5" },
   ];
 
   var path = window.location.pathname;

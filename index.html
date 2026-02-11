@@ -90,6 +90,66 @@
         </div>
       </a>
 
+      <!-- 07 Electrostatics & Fields -->
+      <a href="topics/electrostatics.html" class="card">
+        <div class="card-preview" id="preview-electrostatics"></div>
+        <div class="card-body">
+          <div class="card-number" style="color: #e3b341;">07 — Electrostatics & Fields</div>
+          <div class="card-title">Place charges.</div>
+          <div class="card-desc">Watch invisible fields shape the space between them.</div>
+        </div>
+      </a>
+
+      <!-- 08 Projectile Motion -->
+      <a href="topics/projectile.html" class="card">
+        <div class="card-preview" id="preview-projectile"></div>
+        <div class="card-body">
+          <div class="card-number" style="color: #f778ba;">08 — Projectile Motion</div>
+          <div class="card-title">Fire a cannon.</div>
+          <div class="card-desc">Learn why 45&deg; isn't always the best angle.</div>
+        </div>
+      </a>
+
+      <!-- 09 Thermodynamics -->
+      <a href="topics/thermodynamics.html" class="card">
+        <div class="card-preview" id="preview-thermo"></div>
+        <div class="card-body">
+          <div class="card-number" style="color: #da5b0d;">09 — Thermodynamics</div>
+          <div class="card-title">Compress a gas.</div>
+          <div class="card-desc">Feel how pressure, volume, and temperature are linked.</div>
+        </div>
+      </a>
+
+      <!-- 10 Optics & Light -->
+      <a href="topics/optics.html" class="card">
+        <div class="card-preview" id="preview-optics"></div>
+        <div class="card-body">
+          <div class="card-number" style="color: #56d4dd;">10 — Optics & Light</div>
+          <div class="card-title">Bend light.</div>
+          <div class="card-desc">Trace rays through lenses and find the image.</div>
+        </div>
+      </a>
+
+      <!-- 11 Circuits & Electricity -->
+      <a href="topics/circuits.html" class="card">
+        <div class="card-preview" id="preview-circuits"></div>
+        <div class="card-body">
+          <div class="card-number" style="color: #d4a72c;">11 — Circuits & Electricity</div>
+          <div class="card-title">Build a circuit.</div>
+          <div class="card-desc">See current flow and learn why parallel beats series.</div>
+        </div>
+      </a>
+
+      <!-- 12 Special Relativity -->
+      <a href="topics/relativity.html" class="card">
+        <div class="card-preview" id="preview-relativity"></div>
+        <div class="card-body">
+          <div class="card-number" style="color: #8957e5;">12 — Special Relativity</div>
+          <div class="card-title">Approach light speed.</div>
+          <div class="card-desc">Watch time slow down and space contract.</div>
+        </div>
+      </a>
+
     </div>
   </main>
 
@@ -110,6 +170,12 @@
   <script src="js/topics/gravity.js"></script>
   <script src="js/topics/momentum.js"></script>
   <script src="js/topics/waves.js"></script>
+  <script src="js/topics/electrostatics.js"></script>
+  <script src="js/topics/projectile.js"></script>
+  <script src="js/topics/thermodynamics.js"></script>
+  <script src="js/topics/optics.js"></script>
+  <script src="js/topics/circuits.js"></script>
+  <script src="js/topics/relativity.js"></script>
 
   <!-- Preview sketches -->
   <script>
@@ -370,6 +436,228 @@
           }
 
           t++;
+        }
+      };
+    })());
+
+    // ----- Electrostatics: field arrows around charges -----
+    initPreview('preview-electrostatics', (function () {
+      var charges = [];
+      return {
+        setup: function (p, w, h) {
+          charges = [
+            { x: w * 0.35, y: h * 0.5, q: 1 },
+            { x: w * 0.65, y: h * 0.5, q: -1 }
+          ];
+        },
+        draw: function (p, w, h) {
+          var gridStep = 25;
+          p.strokeWeight(1);
+          for (var gx = gridStep; gx < w; gx += gridStep) {
+            for (var gy = gridStep; gy < h; gy += gridStep) {
+              var ex = 0, ey = 0;
+              for (var c = 0; c < charges.length; c++) {
+                var dx = gx - charges[c].x;
+                var dy = gy - charges[c].y;
+                var r2 = dx * dx + dy * dy + 400;
+                var r = Math.sqrt(r2);
+                var e = charges[c].q / r2;
+                ex += e * dx / r;
+                ey += e * dy / r;
+              }
+              var mag = Math.sqrt(ex * ex + ey * ey);
+              if (mag > 0) {
+                var len = p.constrain(mag * 80000, 2, 12);
+                var nx = ex / mag, ny = ey / mag;
+                p.stroke(227, 179, 65, p.constrain(mag * 200000, 30, 150));
+                p.line(gx, gy, gx + nx * len, gy + ny * len);
+              }
+            }
+          }
+          // Draw charges
+          p.noStroke();
+          p.fill(255, 80, 80);
+          p.ellipse(charges[0].x, charges[0].y, 10);
+          p.fill(80, 130, 255);
+          p.ellipse(charges[1].x, charges[1].y, 10);
+        }
+      };
+    })());
+
+    // ----- Projectile: arcing dots -----
+    initPreview('preview-projectile', (function () {
+      var dots = [];
+      var t = 0;
+      var v0 = 3.5, angle = 0.75;
+      return {
+        setup: function (p, w, h) { dots = []; t = 0; },
+        draw: function (p, w, h) {
+          t++;
+          if (t % 4 === 0) {
+            var age = t * 0.016;
+            var x = 15 + v0 * Math.cos(angle) * age * 40;
+            var y = h - 15 - (v0 * Math.sin(angle) * age * 40 - 0.5 * 9.8 * age * age * 40);
+            if (x < w && y < h) dots.push({ x: x, y: y });
+            if (dots.length > 60) { dots = []; t = 0; }
+          }
+          p.noStroke();
+          for (var i = 0; i < dots.length; i++) {
+            var a = p.map(i, 0, dots.length, 80, 255);
+            p.fill(247, 120, 186, a);
+            p.ellipse(dots[i].x, dots[i].y, 5);
+          }
+        }
+      };
+    })());
+
+    // ----- Thermodynamics: bouncing particles in box -----
+    initPreview('preview-thermo', (function () {
+      var pts = [];
+      return {
+        setup: function (p, w, h) {
+          p.noStroke();
+          for (var i = 0; i < 20; i++) {
+            pts.push({
+              x: p.random(10, w * 0.6),
+              y: p.random(10, h - 10),
+              vx: p.random(-2, 2),
+              vy: p.random(-2, 2)
+            });
+          }
+        },
+        draw: function (p, w, h) {
+          // Piston
+          var px = w * 0.65;
+          p.stroke(218, 91, 13, 120);
+          p.strokeWeight(3);
+          p.line(px, 8, px, h - 8);
+          p.noStroke();
+          for (var i = 0; i < pts.length; i++) {
+            var pt = pts[i];
+            pt.x += pt.vx; pt.y += pt.vy;
+            if (pt.x < 6) { pt.x = 6; pt.vx *= -1; }
+            if (pt.x > px - 6) { pt.x = px - 6; pt.vx *= -1; }
+            if (pt.y < 6) { pt.y = 6; pt.vy *= -1; }
+            if (pt.y > h - 6) { pt.y = h - 6; pt.vy *= -1; }
+            var spd = Math.sqrt(pt.vx * pt.vx + pt.vy * pt.vy);
+            var r = p.map(spd, 0, 4, 80, 255);
+            var b = p.map(spd, 0, 4, 200, 50);
+            p.fill(r, 120, b, 200);
+            p.ellipse(pt.x, pt.y, 5);
+          }
+        }
+      };
+    })());
+
+    // ----- Optics: converging rays -----
+    initPreview('preview-optics', (function () {
+      return {
+        setup: function () {},
+        draw: function (p, w, h) {
+          var lensX = w * 0.5;
+          var f = w * 0.25;
+          // Lens
+          p.stroke(86, 212, 221, 120);
+          p.strokeWeight(2);
+          p.line(lensX, h * 0.15, lensX, h * 0.85);
+          // Rays
+          var rays = [h * 0.3, h * 0.5, h * 0.7];
+          for (var i = 0; i < rays.length; i++) {
+            var ry = rays[i];
+            p.stroke(86, 212, 221, 180);
+            p.strokeWeight(1.5);
+            p.line(0, ry, lensX, ry);
+            var hitH = ry - h * 0.5;
+            var targetY = h * 0.5;
+            var targetX = lensX + f;
+            p.line(lensX, ry, targetX, targetY);
+            if (targetX < w) p.line(targetX, targetY, w, targetY + (targetY - ry) * ((w - targetX) / f));
+          }
+          // Focal point
+          p.noStroke();
+          p.fill(86, 212, 221);
+          p.ellipse(lensX + f, h * 0.5, 6);
+        }
+      };
+    })());
+
+    // ----- Circuits: dots moving along a loop -----
+    initPreview('preview-circuits', (function () {
+      var dots = [];
+      var numDots = 12;
+      return {
+        setup: function (p, w, h) {
+          for (var i = 0; i < numDots; i++) {
+            dots.push({ t: i / numDots });
+          }
+        },
+        draw: function (p, w, h) {
+          var mx = w * 0.15, my = h * 0.25;
+          var mw = w * 0.7, mh = h * 0.5;
+          // Wire loop
+          p.noFill();
+          p.stroke(212, 167, 44, 100);
+          p.strokeWeight(2);
+          p.rect(mx, my, mw, mh, 4);
+          // Resistor zigzag at top
+          var rx = mx + mw * 0.35, ry = my;
+          p.stroke(212, 167, 44, 180);
+          p.strokeWeight(2);
+          for (var z = 0; z < 5; z++) {
+            var x1 = rx + z * 12;
+            var x2 = rx + z * 12 + 6;
+            p.line(x1, ry + (z % 2 === 0 ? -6 : 6), x2, ry + (z % 2 === 0 ? 6 : -6));
+          }
+          // Animated dots
+          var perimeter = 2 * (mw + mh);
+          p.noStroke();
+          for (var i = 0; i < dots.length; i++) {
+            dots[i].t += 0.003;
+            if (dots[i].t > 1) dots[i].t -= 1;
+            var d = dots[i].t * perimeter;
+            var dx, dy;
+            if (d < mw) { dx = mx + d; dy = my; }
+            else if (d < mw + mh) { dx = mx + mw; dy = my + (d - mw); }
+            else if (d < 2 * mw + mh) { dx = mx + mw - (d - mw - mh); dy = my + mh; }
+            else { dx = mx; dy = my + mh - (d - 2 * mw - mh); }
+            p.fill(212, 167, 44, 220);
+            p.ellipse(dx, dy, 5);
+          }
+          // Battery
+          p.stroke(212, 167, 44, 200);
+          p.strokeWeight(2);
+          p.line(mx - 4, my + mh * 0.4, mx - 4, my + mh * 0.6);
+          p.strokeWeight(1);
+          p.line(mx - 8, my + mh * 0.45, mx - 8, my + mh * 0.55);
+        }
+      };
+    })());
+
+    // ----- Relativity: stars streaming + gamma curve -----
+    initPreview('preview-relativity', (function () {
+      var stars = [];
+      return {
+        setup: function (p, w, h) {
+          for (var i = 0; i < 40; i++) {
+            stars.push({ x: p.random(0, w), y: p.random(0, h), s: p.random(1, 3) });
+          }
+        },
+        draw: function (p, w, h) {
+          var speed = 3;
+          p.strokeWeight(1);
+          for (var i = 0; i < stars.length; i++) {
+            var st = stars[i];
+            st.x -= speed * st.s;
+            if (st.x < 0) { st.x = w; st.y = p.random(0, h); }
+            var alpha = p.map(st.s, 1, 3, 60, 200);
+            p.stroke(137, 87, 229, alpha);
+            p.line(st.x, st.y, st.x + st.s * 4, st.y);
+          }
+          // Ship
+          p.noStroke();
+          p.fill(137, 87, 229, 200);
+          var sx = w * 0.2, sy = h * 0.5;
+          p.triangle(sx + 12, sy, sx - 6, sy - 6, sx - 6, sy + 6);
         }
       };
     })());

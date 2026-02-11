@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Special Relativity - Physics Playground</title>
+  <style>:root { --accent: #8957e5; }</style>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/sim.css">
+</head>
+<body>
+
+<main class="container" style="padding-top: var(--space-xl);">
+
+  <!-- Sim Header -->
+  <div class="sim-header">
+    <span class="topic-number">12</span>
+    <h1>Special Relativity</h1>
+  </div>
+
+  <!-- Simulation + Controls -->
+  <div class="sim-layout">
+    <div class="sim-canvas-wrap" id="sim-canvas"></div>
+
+    <div class="sim-controls">
+      <div class="controls-title">Controls</div>
+
+      <!-- Velocity slider -->
+      <div class="control-group">
+        <label>Velocity <span class="value" id="velocity-value">0</span> c</label>
+        <input type="range" id="velocity-slider" min="0" max="0.99" step="0.01" value="0">
+      </div>
+
+      <!-- Show Length Contraction toggle -->
+      <div class="toggle-group">
+        <label class="toggle">
+          <input type="checkbox" id="length-toggle" checked>
+          <span class="toggle-track"></span>
+        </label>
+        <span>Show Length Contraction</span>
+      </div>
+
+      <!-- Show Time Dilation toggle -->
+      <div class="toggle-group">
+        <label class="toggle">
+          <input type="checkbox" id="time-toggle" checked>
+          <span class="toggle-track"></span>
+        </label>
+        <span>Show Time Dilation</span>
+      </div>
+
+      <!-- Trip Distance slider -->
+      <div class="control-group">
+        <label>Trip Distance <span class="value" id="distance-value">10</span> ly</label>
+        <input type="range" id="distance-slider" min="1" max="20" step="1" value="10">
+      </div>
+
+      <!-- Twin Paradox button -->
+      <div class="btn-row">
+        <button id="twin-btn" class="primary">Run Twin Paradox</button>
+      </div>
+
+      <!-- Reset / Pause -->
+      <div class="btn-row" style="margin-top: var(--space-sm);">
+        <button id="reset-btn">Reset</button>
+        <button id="pause-btn">Pause</button>
+      </div>
+
+      <!-- Live readouts -->
+      <div style="margin-top: var(--space-lg); font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); line-height: 1.8;">
+        <div>v/c: <span id="vc-val" style="color: var(--accent);">0.00</span></div>
+        <div>&gamma;: <span id="gamma-val" style="color: var(--accent);">1.00</span></div>
+        <div>Ship time: <span id="ship-time-val" style="color: var(--accent);">&mdash;</span></div>
+        <div>Ground time: <span id="ground-time-val" style="color: var(--accent);">&mdash;</span></div>
+        <div>Age diff: <span id="age-diff-val" style="color: var(--accent);">&mdash;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Topic Content -->
+  <div class="topic-content">
+
+    <!-- Discovery -->
+    <div class="discovery section">
+      <h3>Try this:</h3>
+      <ul>
+        <li>Slowly increase speed from 0 to 0.99c. Gamma barely budges until 0.8c, then explodes. The nonlinearity is the key insight.</li>
+        <li>At v = 0.87c, gamma = 2. The ship is half its rest length and its clock ticks at half speed.</li>
+        <li>Run the twin paradox at 0.9c over 10 light-years. One twin ages years less than the other &mdash; and it&rsquo;s not symmetrical.</li>
+      </ul>
+    </div>
+
+    <!-- The Physics -->
+    <div class="section">
+      <h2>The Physics</h2>
+      <p>
+        Einstein&rsquo;s special relativity rests on two postulates: the speed of light in a vacuum
+        is the same for all observers, and the laws of physics are identical in every inertial
+        (non-accelerating) reference frame. From these two simple ideas, everything else follows.
+      </p>
+      <p>
+        When something moves fast relative to you, its clocks tick slower (time dilation) and its
+        length shrinks in the direction of motion (length contraction). These effects are governed
+        by the Lorentz factor &gamma;, which stays near 1 at everyday speeds but climbs toward
+        infinity as you approach light speed. The twin paradox makes this concrete: a twin who
+        travels at relativistic speed and returns will have aged less than the twin who stayed home.
+        The asymmetry comes from the traveler accelerating and decelerating &mdash; they switch
+        reference frames, while the stay-at-home twin does not.
+      </p>
+    </div>
+
+    <!-- Math Details -->
+    <details class="math-section section">
+      <summary>Math Details</summary>
+      <div class="math-content">
+        <p>The Lorentz factor &mdash; the heart of special relativity:</p>
+        <span class="formula">&gamma; = 1 / &radic;(1 &minus; v&sup2;/c&sup2;)</span>
+
+        <p>Time dilation &mdash; moving clocks run slow:</p>
+        <span class="formula">&Delta;t&prime; = &gamma; &Delta;t</span>
+
+        <p>Length contraction &mdash; moving objects shrink along the direction of motion:</p>
+        <span class="formula">L&prime; = L / &gamma;</span>
+
+        <p>Mass-energy equivalence &mdash; the most famous equation in physics:</p>
+        <span class="formula">E = mc&sup2;</span>
+
+        <p>At v = 0.87c, &gamma; &asymp; 2: clocks tick at half speed, lengths halve. At v = 0.99c, &gamma; &asymp; 7.09: extreme distortion.</p>
+      </div>
+    </details>
+
+    <!-- Beyond Physics -->
+    <div class="beyond section">
+      <h3>Beyond Physics</h3>
+      <p>
+        <strong>The Gamma Curve.</strong> Stress and diminishing returns are nonlinear near capacity.
+        Going from 80% to 95% utilization costs exponentially more than 50% to 80%. Teams, servers,
+        and schedules all follow this curve. The danger zone isn&rsquo;t at 50% &mdash; it&rsquo;s past 85%,
+        where small increases in load produce massive increases in strain.
+      </p>
+      <p>
+        <strong>Frame of Reference.</strong> Both observers are correct in their own frame. Most
+        disagreements aren&rsquo;t about facts but about frames. Before arguing whether something
+        is fast or slow, cheap or expensive, early or late &mdash; ask: relative to what? Agreeing on
+        the reference frame dissolves most conflicts before they start.
+      </p>
+      <p>
+        <strong>E=mc&sup2;.</strong> Small, dense ideas can release enormous value when properly
+        converted. A single insight, a pivotal hire, one architectural decision &mdash; these are the
+        high-mass particles of a business. Execution is the conversion factor. Without it, the energy
+        stays locked inside.
+      </p>
+    </div>
+
+    <!-- Prev / Next Navigation -->
+    <div class="topic-nav">
+      <a class="prev" href="circuits.html">
+        <span class="nav-dir">Previous</span>
+        <span class="nav-title">&larr; Circuits & Electricity</span>
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+<script src="../js/shared.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/topics/relativity.js"></script>
+<script>
+  PhysicsUtils.createSim('sim-canvas', fullSketch);
+</script>
+</body>
+</html>

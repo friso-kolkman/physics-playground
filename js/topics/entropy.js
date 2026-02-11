@@ -219,15 +219,24 @@ function fullSketch(p) {
           pt.vy *= -1;
         }
 
-        // Partition collision
+        // Clamp to box bounds (prevent tunneling through walls)
+        pt.x = Math.max(boxX + particleRadius, Math.min(pt.x, boxX + boxW - particleRadius));
+        pt.y = Math.max(boxY + particleRadius, Math.min(pt.y, boxY + boxH - particleRadius));
+
+        // Partition collision — clamp to correct side to prevent tunneling
         if (partitionExists) {
-          if (pt.x - particleRadius < midX && pt.x + particleRadius > midX) {
-            if (pt.vx > 0 && pt.x - particleRadius < midX) {
+          var wasLeft = pt.startedLeft;
+          if (wasLeft) {
+            // Should stay on left side
+            if (pt.x + particleRadius > midX) {
               pt.x = midX - particleRadius;
-              pt.vx *= -1;
-            } else if (pt.vx < 0 && pt.x + particleRadius > midX) {
+              pt.vx = -Math.abs(pt.vx);
+            }
+          } else {
+            // Should stay on right side (shouldn't happen with current init, but defensive)
+            if (pt.x - particleRadius < midX) {
               pt.x = midX + particleRadius;
-              pt.vx *= -1;
+              pt.vx = Math.abs(pt.vx);
             }
           }
         }

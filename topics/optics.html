@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Optics & Light - Physics Playground</title>
+  <style>:root { --accent: #56d4dd; }</style>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/sim.css">
+  <style>
+    .mode-switch {
+      display: flex;
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border-primary);
+    }
+    .mode-switch label {
+      flex: 1;
+      text-align: center;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      color: var(--text-secondary);
+    }
+    .mode-switch input[type="radio"] {
+      display: none;
+    }
+    .mode-switch input[type="radio"]:checked + label {
+      background: var(--accent);
+      color: var(--bg-primary);
+      font-weight: 600;
+    }
+    .readout-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-xs);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+    .readout-grid span.val {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+<main class="container" style="padding-top: var(--space-xl);">
+
+  <!-- Sim Header -->
+  <div class="sim-header">
+    <span class="topic-number">10</span>
+    <h1>Optics & Light</h1>
+  </div>
+
+  <!-- Simulation + Controls -->
+  <div class="sim-layout">
+    <div class="sim-canvas-wrap" id="sim-canvas"></div>
+
+    <div class="sim-controls">
+
+      <!-- Optic Type -->
+      <div class="controls-title">Optic Type</div>
+      <div class="mode-switch" id="optic-toggle">
+        <input type="radio" name="optic-type" id="optic-convex-lens" value="convex-lens" checked>
+        <label for="optic-convex-lens">Convex Lens</label>
+        <input type="radio" name="optic-type" id="optic-concave-lens" value="concave-lens">
+        <label for="optic-concave-lens">Concave Lens</label>
+      </div>
+      <div class="mode-switch" style="margin-top: 2px;" id="optic-toggle-2">
+        <input type="radio" name="optic-type" id="optic-concave-mirror" value="concave-mirror">
+        <label for="optic-concave-mirror">Concave Mirror</label>
+        <input type="radio" name="optic-type" id="optic-convex-mirror" value="convex-mirror">
+        <label for="optic-convex-mirror">Convex Mirror</label>
+      </div>
+
+      <!-- Focal Length -->
+      <div class="control-group" style="margin-top: var(--space-md);">
+        <label>Focal Length <span class="value" id="focal-value">100</span> px</label>
+        <input type="range" id="focal-slider" min="20" max="200" step="5" value="100">
+      </div>
+
+      <!-- Light Mode -->
+      <div class="controls-title" style="margin-top: var(--space-md);">Light Mode</div>
+      <div class="mode-switch" id="light-toggle">
+        <input type="radio" name="light-mode" id="light-parallel" value="parallel" checked>
+        <label for="light-parallel">Parallel</label>
+        <input type="radio" name="light-mode" id="light-point" value="point">
+        <label for="light-point">Point Source</label>
+      </div>
+
+      <!-- Ray Count -->
+      <div class="control-group" style="margin-top: var(--space-md);">
+        <label>Ray Count <span class="value" id="ray-value">5</span></label>
+        <input type="range" id="ray-slider" min="3" max="15" step="1" value="5">
+      </div>
+
+      <!-- Show Principal Rays -->
+      <div class="toggle-group" style="margin-top: var(--space-md);">
+        <label class="toggle">
+          <input type="checkbox" id="principal-toggle" checked>
+          <span class="toggle-track"></span>
+        </label>
+        <span>Show Principal Rays</span>
+      </div>
+
+      <!-- Readouts -->
+      <div class="readout-grid" style="margin-top: var(--space-lg);">
+        <div>d<sub>o</sub>: <span class="val" id="do-val">&mdash;</span></div>
+        <div>d<sub>i</sub>: <span class="val" id="di-val">&mdash;</span></div>
+        <div>M: <span class="val" id="mag-val">&mdash;</span></div>
+        <div>Image: <span class="val" id="image-type-val">&mdash;</span></div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="btn-row" style="margin-top: var(--space-md);">
+        <button id="reset-btn">Reset</button>
+        <button id="pause-btn">Pause</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Topic Content -->
+  <div class="topic-content">
+
+    <!-- Discovery -->
+    <div class="discovery section">
+      <h3>Try this:</h3>
+      <ul>
+        <li>Place the object beyond 2f. The image is small, inverted, and real &mdash; just like a camera.</li>
+        <li>Move the object closer than f. The image flips to virtual and magnified &mdash; you&rsquo;ve made a magnifying glass.</li>
+        <li>Switch between convex lens and concave mirror. Same convergence pattern, completely different mechanism.</li>
+      </ul>
+    </div>
+
+    <!-- The Physics -->
+    <div class="section">
+      <h2>The Physics</h2>
+      <p>
+        Light bends when it passes through a lens (refraction) and bounces when it hits a mirror
+        (reflection). The thin lens equation relates the object distance, image distance, and focal
+        length into one elegant rule. A convex lens converges parallel light to a focal point. A
+        concave lens diverges it, making rays appear to originate from a virtual focal point behind
+        the lens.
+      </p>
+      <p>
+        Real images form where rays actually converge &mdash; you can project them onto a screen.
+        Virtual images form where rays only appear to diverge from &mdash; you see them by looking
+        through the optic, but no light actually reaches that point. Three principal rays are enough
+        to locate any image: one parallel to the axis, one through the center, and one through (or
+        toward) the focal point.
+      </p>
+      <p>
+        Mirrors follow the same mathematics but reflect instead of refract. A concave mirror acts
+        like a convex lens (converging), and a convex mirror acts like a concave lens (diverging).
+        The sign conventions flip for mirrors because the image forms on the same side as the object.
+      </p>
+    </div>
+
+    <!-- Math Details -->
+    <details class="math-section section">
+      <summary>Math Details</summary>
+      <div class="math-content">
+        <p>The thin lens (and mirror) equation:</p>
+        <span class="formula">1/f = 1/d<sub>o</sub> + 1/d<sub>i</sub></span>
+
+        <p>Magnification &mdash; the ratio of image height to object height:</p>
+        <span class="formula">M = &minus;d<sub>i</sub> / d<sub>o</sub></span>
+
+        <p>Sign conventions (lenses): f &gt; 0 for convex, f &lt; 0 for concave. d<sub>i</sub> &gt; 0 means real image (opposite side), d<sub>i</sub> &lt; 0 means virtual image (same side).</p>
+
+        <p>Sign conventions (mirrors): f &gt; 0 for concave, f &lt; 0 for convex. d<sub>i</sub> &gt; 0 means real image (same side as object), d<sub>i</sub> &lt; 0 means virtual image (behind mirror).</p>
+
+        <p>|M| &gt; 1 means magnified, |M| &lt; 1 means diminished. M &lt; 0 means inverted.</p>
+      </div>
+    </details>
+
+    <!-- Beyond Physics -->
+    <div class="beyond section">
+      <h3>Beyond Physics</h3>
+      <p>
+        <strong>The Lens Effect.</strong> A convex lens takes scattered parallel light and focuses it
+        into a single burning point. Great leaders do the same &mdash; they take scattered effort,
+        competing priorities, and diffuse energy, and focus them into a single point of impact. The
+        tighter the focus, the more intense the result. Defocused effort feels busy but burns nothing.
+      </p>
+      <p>
+        <strong>Focal Length Sets Your Range.</strong> A short focal length gives you a close, magnified
+        view &mdash; the specialist. A long focal length gives you a wide, smaller view &mdash; the
+        generalist. Neither is better; they solve different problems. The mistake is using a telephoto
+        lens when you need a microscope, or vice versa. Know your focal length.
+      </p>
+      <p>
+        <strong>Real vs Virtual Images.</strong> Real images can be projected onto a screen &mdash; they
+        exist where light actually converges. Virtual images look real but no light actually reaches
+        that point. Revenue, shipped products, signed contracts &mdash; those are real images. Vanity
+        metrics, pitch decks, and projections &mdash; those are virtual images. Know which one you are
+        measuring.
+      </p>
+    </div>
+
+    <!-- Prev / Next Navigation -->
+    <div class="topic-nav">
+      <a class="prev" href="thermodynamics.html">
+        <span class="nav-dir">Previous</span>
+        <span class="nav-title">&larr; Thermodynamics</span>
+      </a>
+      <a class="next" href="circuits.html">
+        <span class="nav-dir">Next</span>
+        <span class="nav-title">Circuits & Electricity &rarr;</span>
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+<script src="../js/shared.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/topics/optics.js"></script>
+<script>
+  PhysicsUtils.createSim('sim-canvas', fullSketch);
+</script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Circuits & Electricity - Physics Playground</title>
+  <style>:root { --accent: #d4a72c; }</style>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/sim.css">
+  <style>
+    .mode-switch {
+      display: flex;
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border-primary);
+    }
+    .mode-switch label {
+      flex: 1;
+      text-align: center;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      color: var(--text-secondary);
+    }
+    .mode-switch input[type="radio"] {
+      display: none;
+    }
+    .mode-switch input[type="radio"]:checked + label {
+      background: var(--accent);
+      color: var(--bg-primary);
+      font-weight: 600;
+    }
+    .readout-table {
+      width: 100%;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      border-collapse: collapse;
+    }
+    .readout-table th {
+      text-align: left;
+      font-weight: 400;
+      padding: 2px 6px 2px 0;
+      color: var(--text-secondary);
+      opacity: 0.7;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .readout-table td {
+      padding: 2px 6px 2px 0;
+      color: var(--accent);
+    }
+    .readout-table tr.total-row td {
+      border-top: 1px solid var(--border-primary);
+      padding-top: 4px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<main class="container" style="padding-top: var(--space-xl);">
+
+  <!-- Sim Header -->
+  <div class="sim-header">
+    <span class="topic-number">11</span>
+    <h1>Circuits & Electricity</h1>
+  </div>
+
+  <!-- Simulation + Controls -->
+  <div class="sim-layout">
+    <div class="sim-canvas-wrap" id="sim-canvas"></div>
+
+    <div class="sim-controls">
+
+      <!-- Voltage -->
+      <div class="control-group">
+        <label>Voltage <span class="value" id="voltage-value">12</span> V</label>
+        <input type="range" id="voltage-slider" min="1" max="24" step="0.5" value="12">
+      </div>
+
+      <!-- Resistors -->
+      <div class="control-group">
+        <label>R1 <span class="value" id="r1-value">10</span> &Omega;</label>
+        <input type="range" id="r1-slider" min="1" max="100" step="1" value="10">
+      </div>
+
+      <div class="control-group">
+        <label>R2 <span class="value" id="r2-value">20</span> &Omega;</label>
+        <input type="range" id="r2-slider" min="1" max="100" step="1" value="20">
+      </div>
+
+      <div class="control-group">
+        <label>R3 <span class="value" id="r3-value">30</span> &Omega;</label>
+        <input type="range" id="r3-slider" min="1" max="100" step="1" value="30">
+      </div>
+
+      <!-- Circuit Mode -->
+      <div class="controls-title" style="margin-top: var(--space-md);">Circuit Mode</div>
+      <div class="mode-switch" id="mode-toggle">
+        <input type="radio" name="circuit-mode" id="mode-series" value="series" checked>
+        <label for="mode-series">Series</label>
+        <input type="radio" name="circuit-mode" id="mode-parallel" value="parallel">
+        <label for="mode-parallel">Parallel</label>
+      </div>
+
+      <!-- Number of Resistors -->
+      <div class="controls-title" style="margin-top: var(--space-md);">Resistors</div>
+      <div class="mode-switch" id="num-toggle">
+        <input type="radio" name="num-resistors" id="num-1" value="1">
+        <label for="num-1">1</label>
+        <input type="radio" name="num-resistors" id="num-2" value="2">
+        <label for="num-2">2</label>
+        <input type="radio" name="num-resistors" id="num-3" value="3" checked>
+        <label for="num-3">3</label>
+      </div>
+
+      <!-- Show Dots toggle -->
+      <div class="toggle-group" style="margin-top: var(--space-md);">
+        <label class="toggle">
+          <input type="checkbox" id="dots-toggle" checked>
+          <span class="toggle-track"></span>
+        </label>
+        <span>Show Current Dots</span>
+      </div>
+
+      <!-- Readouts -->
+      <div style="margin-top: var(--space-sm);">
+        <table class="readout-table">
+          <tr>
+            <th></th><th>V</th><th>I</th><th>P</th>
+          </tr>
+          <tr id="readout-r1">
+            <td>R1</td>
+            <td><span id="v1-val">0</span></td>
+            <td><span id="i1-val">0</span></td>
+            <td><span id="p1-val">0</span></td>
+          </tr>
+          <tr id="readout-r2">
+            <td>R2</td>
+            <td><span id="v2-val">0</span></td>
+            <td><span id="i2-val">0</span></td>
+            <td><span id="p2-val">0</span></td>
+          </tr>
+          <tr id="readout-r3">
+            <td>R3</td>
+            <td><span id="v3-val">0</span></td>
+            <td><span id="i3-val">0</span></td>
+            <td><span id="p3-val">0</span></td>
+          </tr>
+          <tr class="total-row">
+            <td>Total</td>
+            <td>R<sub>t</sub> <span id="rtotal-val">0</span></td>
+            <td><span id="itotal-val">0</span></td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Buttons -->
+      <div class="btn-row" style="margin-top: var(--space-md);">
+        <button id="reset-btn">Reset</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Topic Content -->
+  <div class="topic-content">
+
+    <!-- Discovery -->
+    <div class="discovery section">
+      <h3>Try this:</h3>
+      <ul>
+        <li>Set two 10&Omega; resistors in series &mdash; total is 20&Omega;. Switch to parallel &mdash; it drops to 5&Omega;. Adding paths reduces resistance.</li>
+        <li>In series, watch the current dots &mdash; same speed everywhere. In parallel, each branch has different speed.</li>
+        <li>Double the voltage. Current doubles, but power quadruples. That&rsquo;s why V&sup2; matters.</li>
+      </ul>
+    </div>
+
+    <!-- The Physics -->
+    <div class="section">
+      <h2>The Physics</h2>
+      <p>
+        Ohm&rsquo;s law is the foundation of circuit analysis: voltage equals current times resistance,
+        V = IR. It tells you that for a given resistance, pushing harder (more voltage) drives more
+        current, and for a given voltage, more resistance means less current. It&rsquo;s a simple
+        linear relationship, but it governs everything from phone chargers to power grids.
+      </p>
+      <p>
+        In a series circuit, components share the same current but divide the voltage. The total
+        resistance is simply the sum of all resistors &mdash; each one adds to the bottleneck.
+        In a parallel circuit, components share the same voltage but divide the current. Each
+        branch provides an alternative path, so the total resistance is always less than the
+        smallest individual resistor. Current naturally distributes itself so that more flows
+        through lower-resistance paths.
+      </p>
+      <p>
+        Power dissipation follows P = IV, which can be rewritten as P = I&sup2;R or P = V&sup2;/R.
+        The V&sup2; form reveals something important: doubling voltage quadruples power. This is
+        why high-voltage transmission lines lose less energy &mdash; for the same power delivered,
+        higher voltage means lower current and thus less I&sup2;R heating in the wires.
+      </p>
+    </div>
+
+    <!-- Math Details -->
+    <details class="math-section section">
+      <summary>Math Details</summary>
+      <div class="math-content">
+        <p>Ohm&rsquo;s law &mdash; the fundamental circuit equation:</p>
+        <span class="formula">V = I R</span>
+
+        <p>Series resistance &mdash; resistances add directly:</p>
+        <span class="formula">R<sub>total</sub> = R&sub1; + R&sub2; + R&sub3;</span>
+
+        <p>Parallel resistance &mdash; reciprocals add:</p>
+        <span class="formula">1/R<sub>total</sub> = 1/R&sub1; + 1/R&sub2; + 1/R&sub3;</span>
+
+        <p>Power dissipation &mdash; three equivalent forms:</p>
+        <span class="formula">P = IV = I&sup2;R = V&sup2;/R</span>
+
+        <p>Current conservation at a junction (Kirchhoff&rsquo;s current law):</p>
+        <span class="formula">&Sigma; I<sub>in</sub> = &Sigma; I<sub>out</sub></span>
+      </div>
+    </details>
+
+    <!-- Beyond Physics -->
+    <div class="beyond section">
+      <h3>Beyond Physics</h3>
+      <p>
+        <strong>Ohm&rsquo;s Law for Organizations.</strong> Reducing resistance (bureaucracy,
+        unclear ownership, approval chains) is often more effective than increasing voltage
+        (pressure, urgency, longer hours). A small reduction in organizational resistance can
+        unlock far more throughput than any amount of pushing harder. Fix the process before
+        blaming the people.
+      </p>
+      <p>
+        <strong>Series vs Parallel Teams.</strong> A series workflow creates bottlenecks &mdash;
+        the slowest step sets the pace for everything downstream. A parallel structure multiplies
+        throughput by letting independent streams run simultaneously. The best organizations
+        ruthlessly identify which dependencies are real (must be series) and which are artificial
+        (can be parallelized). Most bottlenecks are organizational, not technical.
+      </p>
+      <p>
+        <strong>Power Scales with V&sup2;.</strong> Intensity and effort scale nonlinearly.
+        Doubling your commitment to something doesn&rsquo;t double the output &mdash; it can
+        quadruple it, because focus compounds. But the same V&sup2; law applies to burnout:
+        doubling the voltage on a system quadruples the heat dissipated. Know which resistors
+        in your life are generating useful work and which are just burning energy.
+      </p>
+    </div>
+
+    <!-- Prev / Next Navigation -->
+    <div class="topic-nav">
+      <a class="prev" href="optics.html">
+        <span class="nav-dir">Previous</span>
+        <span class="nav-title">&larr; Optics & Light</span>
+      </a>
+      <a class="next" href="relativity.html">
+        <span class="nav-dir">Next</span>
+        <span class="nav-title">Special Relativity &rarr;</span>
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+<script src="../js/shared.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/topics/circuits.js"></script>
+<script>
+  PhysicsUtils.createSim('sim-canvas', fullSketch);
+</script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Electrostatics & Fields - Physics Playground</title>
+  <style>:root { --accent: #e3b341; }</style>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/sim.css">
+  <style>
+    .mode-switch {
+      display: flex;
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border-primary);
+    }
+    .mode-switch label {
+      flex: 1;
+      text-align: center;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      color: var(--text-secondary);
+    }
+    .mode-switch input[type="radio"] {
+      display: none;
+    }
+    .mode-switch input[type="radio"]:checked + label {
+      background: var(--accent);
+      color: var(--bg-primary);
+      font-weight: 600;
+    }
+    .preset-row {
+      display: flex;
+      gap: var(--space-xs);
+      flex-wrap: wrap;
+    }
+    .preset-row button {
+      flex: 1;
+      min-width: 0;
+    }
+  </style>
+</head>
+<body>
+
+<main class="container" style="padding-top: var(--space-xl);">
+
+  <!-- Sim Header -->
+  <div class="sim-header">
+    <span class="topic-number">07</span>
+    <h1>Electrostatics & Fields</h1>
+  </div>
+
+  <!-- Simulation + Controls -->
+  <div class="sim-layout">
+    <div class="sim-canvas-wrap" id="sim-canvas"></div>
+
+    <div class="sim-controls">
+
+      <!-- Charge Polarity -->
+      <div class="controls-title">Charge Polarity</div>
+      <div class="mode-switch" id="polarity-toggle">
+        <input type="radio" name="polarity" id="polarity-pos" value="positive" checked>
+        <label for="polarity-pos">+</label>
+        <input type="radio" name="polarity" id="polarity-neg" value="negative">
+        <label for="polarity-neg">&minus;</label>
+      </div>
+
+      <!-- Charge Magnitude -->
+      <div class="control-group" style="margin-top: var(--space-md);">
+        <label>Charge Magnitude <span class="value" id="magnitude-value">5</span></label>
+        <input type="range" id="magnitude-slider" min="1" max="10" step="1" value="5">
+      </div>
+
+      <!-- Field Visualization -->
+      <div class="controls-title" style="margin-top: var(--space-md);">Field Visualization</div>
+      <div class="mode-switch" id="field-mode-toggle">
+        <input type="radio" name="field-mode" id="field-arrows" value="arrows" checked>
+        <label for="field-arrows">Arrows</label>
+        <input type="radio" name="field-mode" id="field-lines" value="lines">
+        <label for="field-lines">Lines</label>
+        <input type="radio" name="field-mode" id="field-none" value="none">
+        <label for="field-none">None</label>
+      </div>
+
+      <!-- Toggles -->
+      <div class="toggle-group" style="margin-top: var(--space-md);">
+        <label class="toggle">
+          <input type="checkbox" id="show-potential">
+          <span class="toggle-track"></span>
+        </label>
+        <span>Show potential heatmap</span>
+      </div>
+
+      <div class="toggle-group">
+        <label class="toggle">
+          <input type="checkbox" id="lock-charges">
+          <span class="toggle-track"></span>
+        </label>
+        <span>Lock charges</span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="btn-row" style="margin-top: var(--space-md);">
+        <button id="clear-btn">Clear All</button>
+        <button id="reset-btn">Reset</button>
+        <button id="pause-btn">Pause</button>
+      </div>
+
+      <!-- Presets -->
+      <div class="controls-title" style="margin-top: var(--space-md);">Presets</div>
+      <div class="btn-row preset-row">
+        <button id="preset-dipole">Dipole</button>
+        <button id="preset-quadrupole">Quadrupole</button>
+        <button id="preset-plates">Plates</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Topic Content -->
+  <div class="topic-content">
+
+    <!-- Discovery -->
+    <div class="discovery section">
+      <h3>Try this:</h3>
+      <ul>
+        <li>Place a positive and negative charge. Watch the field lines connect them like invisible strings.</li>
+        <li>Put two positive charges side by side. Can you find the dead zone where the field cancels?</li>
+        <li>Use the Parallel Plates preset. Toggle the potential heatmap &mdash; see the gradient between the plates.</li>
+      </ul>
+    </div>
+
+    <!-- The Physics -->
+    <div class="section">
+      <h2>The Physics</h2>
+      <p>
+        Electric charges create invisible fields that permeate the space around them. A positive charge
+        pushes other positive charges away and pulls negative charges in. The strength of this force
+        follows Coulomb&rsquo;s law &mdash; it&rsquo;s proportional to the product of the charges and
+        inversely proportional to the square of the distance between them. Double the distance, quarter
+        the force.
+      </p>
+      <p>
+        Field lines are a way to visualize this invisible influence. They flow outward from positive
+        charges and inward toward negative charges. Where lines are dense, the field is strong. Where
+        they spread apart, it&rsquo;s weak. The electric potential is the energy landscape &mdash; charges
+        roll downhill on this surface, from high potential to low, like a ball on a tilted table.
+      </p>
+    </div>
+
+    <!-- Math Details -->
+    <details class="math-section section">
+      <summary>Math Details</summary>
+      <div class="math-content">
+        <p>Coulomb&rsquo;s law &mdash; the force between two point charges:</p>
+        <span class="formula">F = k q&sub1;q&sub2; / r&sup2;</span>
+
+        <p>The electric field created by a charge &mdash; force per unit test charge:</p>
+        <span class="formula">E = F / q = k Q / r&sup2;</span>
+
+        <p>Electric potential &mdash; energy per unit charge:</p>
+        <span class="formula">V = k q / r</span>
+
+        <p>The Coulomb constant:</p>
+        <span class="formula">k &asymp; 8.99 &times; 10&sup9; N&middot;m&sup2;/C&sup2;</span>
+      </div>
+    </details>
+
+    <!-- Beyond Physics -->
+    <div class="beyond section">
+      <h3>Beyond Physics</h3>
+      <p>
+        <strong>The Field Concept.</strong> Influence radiates invisibly from sources of power. A CEO
+        doesn&rsquo;t need to be in the room &mdash; their decisions create a field that shapes behavior
+        across the organization. Understanding the field matters more than understanding the source.
+        Map the field, and you can predict how things will move.
+      </p>
+      <p>
+        <strong>Like Repels Like.</strong> Two strong personalities in the same space create a dead
+        zone between them &mdash; a region where nothing gets done because the forces cancel. This
+        isn&rsquo;t failure, it&rsquo;s physics. The solution isn&rsquo;t to remove one, but to
+        introduce an opposite charge that creates productive flow between them.
+      </p>
+      <p>
+        <strong>The Dipole Pattern.</strong> The most stable and productive configuration in
+        electrostatics is the dipole &mdash; a positive and negative charge working in tension.
+        This creates the richest field structure. In teams, productive tension between a visionary
+        and an operator, an optimist and a skeptic, creates more structure than agreement ever could.
+      </p>
+    </div>
+
+    <!-- Prev / Next Navigation -->
+    <div class="topic-nav">
+      <a class="prev" href="waves.html">
+        <span class="nav-dir">Previous</span>
+        <span class="nav-title">&larr; Waves & Resonance</span>
+      </a>
+      <a class="next" href="projectile.html">
+        <span class="nav-dir">Next</span>
+        <span class="nav-title">Projectile Motion &rarr;</span>
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+<script src="../js/shared.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/topics/electrostatics.js"></script>
+<script>
+  PhysicsUtils.createSim('sim-canvas', fullSketch);
+</script>
+</body>
+</html>
