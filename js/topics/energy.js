@@ -109,9 +109,8 @@ function fullSketch(p) {
       if (dampingOn) {
         angAcc -= dampingCoeff * angVel;
       }
-      var dt = 1/60;
-      angVel += angAcc * dt;
-      angle += angVel * dt;
+      angVel += angAcc;
+      angle += angVel;
     }
 
     var bob = getBobPos();
